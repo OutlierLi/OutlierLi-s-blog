@@ -5,14 +5,21 @@ import type { AstroIntegration } from 'astro'
 import { rehypeHeadingIds } from '@astrojs/markdown-remark'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
+import vercel from '@astrojs/vercel'
 import AstroPureIntegration from 'astro-pure'
 import { defineConfig } from 'astro/config'
 import rehypeKatex from 'rehype-katex'
 import remarkCjkFriendly from 'remark-cjk-friendly'
 import remarkMath from 'remark-math'
 
+// Others
+// import { visualizer } from 'rollup-plugin-visualizer'
+
+// Local integrations
+// Local rehype & remark plugins
 import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
 import remarkReadingTime from './src/plugins/remark-reading-time.ts'
+// Shiki
 import {
   addCopyButton,
   addLanguage,
@@ -23,7 +30,12 @@ import {
 } from './src/plugins/shiki-transformers.ts'
 import config from './src/site.config.ts'
 
-const excludedSitemapPathPatterns = [/^\/404\/?$/, /^\/search\/?$/, /^\/api(?:\/|$)/]
+const excludedSitemapPathPatterns = [
+  /^\/(?:en\/)?404\/?$/,
+  /^\/(?:en\/)?search\/?$/,
+  /^\/api(?:\/|$)/,
+  /^\/\.well-known\/joye-manifest\.json$/
+]
 
 const shouldIncludeInSitemap = (page: string) => {
   const { pathname } = new URL(page)
@@ -44,6 +56,7 @@ const bilingualReadingTime = (): AstroIntegration => ({
   name: 'bilingual-reading-time',
   hooks: {
     'astro:config:setup': ({ updateConfig }) => {
+      // Run after astro-pure's reading-time plugin so this bilingual estimate wins.
       updateConfig({
         markdown: {
           remarkPlugins: [remarkReadingTime]
@@ -53,29 +66,59 @@ const bilingualReadingTime = (): AstroIntegration => ({
   }
 })
 
+// https://astro.build/config
 export default defineConfig({
-  site: 'https://outlierli-s-blog.pages.dev',
+  // Top-Level Options
+  site: 'https://www.joyehuang.me',
+  // base: '/docs',
   trailingSlash: 'never',
-  output: 'static',
+
+  // Adapter
+  // https://docs.astro.build/en/guides/deploy/
+  // 1. Vercel (serverless)
+  adapter: vercel(),
+  output: 'server',
+  // 2. Vercel (static)
+  // adapter: vercelStatic(),
+  // 3. Local (standalone)
+  // adapter: node({ mode: 'standalone' }),
+  // output: 'server',
+  // ---
+
   image: {
     service: {
       entrypoint: 'astro/assets/services/sharp'
     }
   },
+
   integrations: [
     sitemap({
-      filter: shouldIncludeInSitemap
+      filter: shouldIncludeInSitemap,
+      i18n: {
+        defaultLocale: 'zh',
+        locales: {
+          zh: 'zh-CN',
+          en: 'en'
+        }
+      }
     }),
     exposeSingleSitemap(),
+    // astro-pure will automatically add sitemap, mdx & unocss
     AstroPureIntegration(config),
     bilingualReadingTime(),
     react()
   ],
+  // root: './my-project-directory',
+
+  // Prefetch Options
   prefetch: true,
+  // Server Options
   server: {
     host: true
   },
+  // Markdown Options
   markdown: {
+    // remark-cjk-friendly：修复 **加粗** 紧贴全角标点时不渲染的 CommonMark flanking 问题
     remarkPlugins: [remarkMath, remarkCjkFriendly],
     rehypePlugins: [
       [rehypeKatex, {}],
@@ -89,6 +132,7 @@ export default defineConfig({
         }
       ]
     ],
+    // https://docs.astro.build/en/guides/syntax-highlighting/
     shikiConfig: {
       themes: {
         light: 'github-light',
@@ -101,13 +145,19 @@ export default defineConfig({
         addTitle(),
         addLanguage(),
         addCopyButton(2000)
-      ] as NonNullable<NonNullable<import('astro').AstroUserConfig['markdown']>['shikiConfig']>['transformers']
+      ]
     }
   },
   experimental: {
     contentIntellisense: true
   },
   vite: {
+    plugins: [
+      //   visualizer({
+      //     emitFile: true,
+      //     filename: 'stats.html'
+      //   })
+    ],
     resolve: {
       dedupe: ['react', 'react-dom']
     },
@@ -116,7 +166,15 @@ export default defineConfig({
       noExternal: ['satori']
     },
     optimizeDeps: {
-      include: ['satori', 'base64-js'],
+      include: [
+        'satori',
+        'linebreak',
+        'base64-js',
+        'unicode-trie',
+        'unicode-properties',
+        '@waline/client',
+        'recaptcha-v3'
+      ],
       esbuildOptions: {
         plugins: [
           {

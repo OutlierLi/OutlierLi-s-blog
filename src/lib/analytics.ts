@@ -1,11 +1,20 @@
+import { track } from '@vercel/analytics'
+
 type AnalyticsValue = string | number | boolean | null
 export type AnalyticsProperties = Record<string, AnalyticsValue>
 
+export function getLocale(pathname = globalThis.location?.pathname ?? '/'): 'zh' | 'en' {
+  return pathname === '/en' || pathname.startsWith('/en/') ? 'en' : 'zh'
+}
+
 export function getDestinationType(href: string | null): string | null {
   if (!href) return null
-  const url = new URL(href, globalThis.location?.origin ?? 'https://outlierli-s-blog.pages.dev')
+
+  const url = new URL(href, globalThis.location?.origin ?? 'https://www.joyehuang.me')
   if (url.protocol === 'mailto:') return 'mailto'
   if (url.hostname === 'github.com') return 'github'
+  if (url.hostname.includes('bilibili.com')) return 'video'
+  if (url.hostname.includes('feishu.cn')) return 'doc'
   if (url.origin === globalThis.location?.origin) return 'internal'
   return 'external'
 }
@@ -41,7 +50,13 @@ export function propertiesFromDataset(element: HTMLElement): AnalyticsProperties
 }
 
 export function trackSiteEvent(eventName: string, properties: AnalyticsProperties = {}) {
-  if (import.meta.env.DEV) {
-    console.debug('[analytics]', eventName, properties)
-  }
+  const page = globalThis.location?.pathname ?? '/'
+  const href = typeof properties.href === 'string' ? properties.href : null
+
+  track(eventName, {
+    locale: properties.locale ?? getLocale(page),
+    page: properties.page ?? page,
+    ...properties,
+    destination_type: properties.destination_type ?? getDestinationType(href)
+  })
 }

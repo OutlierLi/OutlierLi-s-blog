@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="OuterLi">
-  <rect width="256" height="256" rx="56" fill="#101828"/>
-  <circle cx="128" cy="128" r="82" fill="#f2f4f7"/>
-  <path fill="#101828" d="M89 79h78v20h-55v26h50v20h-50v32h58v20H89z"/>
-  <path fill="#0ea5a4" d="M159 78h21v98h-21z"/>
-</svg>
