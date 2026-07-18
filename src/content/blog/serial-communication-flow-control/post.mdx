@@ -1,0 +1,51 @@
+---
+title: 串口通信原理与流控
+description: 梳理串口通信中的软硬件流控、UART 数据帧、轮询、中断、DMA 以及发送状态机。
+publishDate: 2026-07-18
+tags: [communication, embedded, uart]
+draft: false
+---
+
+## 流控
+
+流控分为硬流控和软流控。软流控的实现需要占据数据通道，硬流控通过硬件实现，无需占据数据通道。
+
+## 串口流控示例
+
+串口流控：
+
+![串口流控示例](/images/serial-communication-flow-control/uart-flow-control.png)
+
+串口通过 TX 和 RX 发送数据，通过拉高或者拉低 TX 电平来发送数据，通过 RX 的电平采样数据来接收数据。
+
+RTS：输入管脚，请求对方发送数据。高电平表示不允许对端发送，低电平表示允许对端发送数据。
+
+## 流控实现细节分析
+
+### 串口数据传输流程
+
+![串口数据传输流程](/images/serial-communication-flow-control/uart-frame.png)
+
+起始位、校验位、结束位，针对的是每一个字节。也就是一个字节 8 bit，加上起始位、校验位、结束位，发送到 TX 线上的电平信号为 11 bit。默认 TX 线常态为高，所以停止位为 1。
+
+轮询数据传输流程：
+
+![轮询数据传输流程](/images/serial-communication-flow-control/polling-transfer.png)
+
+轮询会大量占据 CPU 的时间片，对性能影响很大。外循环和内循环实现了生产者-消费者模型。
+
+中断实现流程：
+
+![中断实现流程](/images/serial-communication-flow-control/interrupt-transfer.png)
+
+中断是大部分设备使用的方案。
+
+DMA 实现流程：
+
+![DMA 实现流程](/images/serial-communication-flow-control/dma-transfer.png)
+
+发送状态机 FSM：
+
+![发送状态机 FSM](/images/serial-communication-flow-control/tx-fsm.png)
+
+`bit_tick` 为波特率时钟驱动。流控也是在这里进行控制，CTS 为输入管脚，控制本端的 TX。当 CTS 为高，FIFO 即使不空，也不会进入 LOAD 流程，不会进行 START，所以看上去就是卡在了当前字节。
