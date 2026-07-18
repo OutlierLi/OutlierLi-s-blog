@@ -3,7 +3,6 @@ import { Image } from 'astro:assets'
 import { getCollection } from 'astro:content'
 import avatar from 'src/assets/avatar.png'
 
-import { Quote } from 'astro-pure/advanced'
 import { Button, Card, Icon, Label } from 'astro-pure/user'
 import PageLayout from '@/layouts/BaseLayout.astro'
 import PostPreviewEn from '@/components/blog/PostPreviewEn.astro'
@@ -30,22 +29,18 @@ const allPostsByDate = (await getCollection('blogEn'))
 const channelCards = [
   {
     heading: 'Thoughts',
-    subheading: '随想',
     href: '/en/thoughts'
   },
   {
     heading: 'Books',
-    subheading: '读书',
     href: '/en/books'
   },
   {
     heading: 'Movies',
-    subheading: '电影',
     href: '/en/movies'
   },
   {
     heading: 'Photography',
-    subheading: '摄影',
     href: '/en/photography'
   }
 ]
@@ -132,19 +127,14 @@ const channelCards = [
         <div class='grid gap-3 sm:grid-cols-2'>
           {
             channelCards.map((card) => (
-              <LinkCard
-                heading={card.heading}
-                subheading={card.subheading}
-                href={card.href}
-                target='_self'
-              />
+              <LinkCard heading={card.heading} href={card.href} target='_self' />
             ))
           }
         </div>
       </Section>
 
       <Section title='Education'>
-        <Card as='a' heading='西安电子科技大学' subheading='物联网工程专业' date='2019 - 2023' />
+        <Card as='a' heading='西安电子科技大学' subheading='物联网工程' date='2019 - 2023' />
       </Section>
 
       <Section title='GitHub'>
@@ -160,7 +150,6 @@ const channelCards = [
 
       <SiteStats lang='en' />
     </div>
-    <Quote class='mt-12' />
   </main>
 
   <div id='home-jojo' class='pointer-events-none fixed bottom-6 end-6 z-40 hidden md:block'>
