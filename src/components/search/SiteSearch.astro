@@ -96,9 +96,7 @@
 
     const meta = document.createElement('div')
     meta.className = 'local-search-meta'
-    meta.textContent = [item.collection === 'blog' ? 'Blog' : 'Notes', item.date]
-      .filter(Boolean)
-      .join(' · ')
+    meta.textContent = ['Blog', item.date].filter(Boolean).join(' · ')
 
     const excerpt = document.createElement('p')
     excerpt.className = 'local-search-excerpt'

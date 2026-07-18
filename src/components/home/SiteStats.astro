@@ -10,10 +10,7 @@ interface Props {
 
 const { lang = 'zh' } = Astro.props as Props
 
-const [blogPosts, notes] = await Promise.all([
-  getCollection('blog', ({ data }) => !data.draft),
-  getCollection('notes', ({ data }) => !data.draft)
-])
+const blogPosts = await getCollection('blog', ({ data }) => !data.draft)
 
 // Live total page views from Waline (/api/stats endpoint on the waline server).
 // On a transient failure we render 0 — better than a stale number.
@@ -38,25 +35,22 @@ const labels =
     ? {
         title: 'Site stats',
         blog: 'Posts',
-        notes: 'Notes',
         pageViews: 'Page views'
       }
     : {
         title: '站点统计',
         blog: '文章',
-        notes: '笔记',
         pageViews: '浏览量'
       }
 
 const items = [
   { label: labels.blog, value: blogPosts.length.toString() },
-  { label: labels.notes, value: notes.length.toString() },
   { label: labels.pageViews, value: pageViews.toLocaleString() }
 ]
 ---
 
 <Section title={labels.title}>
-  <div class='grid grid-cols-2 gap-3 sm:grid-cols-3'>
+  <div class='grid grid-cols-2 gap-3'>
     {
       items.map(({ label, value }) => (
         <div class='rounded-xl border bg-muted/30 px-4 py-3 text-center'>

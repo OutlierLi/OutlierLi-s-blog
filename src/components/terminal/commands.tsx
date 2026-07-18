@@ -4,7 +4,7 @@ import type { DirNode, FsNode } from './fs/types'
 import type { CommandRegistry, CompletionContext, OutputLine } from './types'
 
 type SearchApiResult = {
-  collection: 'blog' | 'notes'
+  collection: 'blog'
   title: string
   description?: string
   url: string
@@ -190,7 +190,7 @@ export const commands: CommandRegistry = {
       }
       // No viewer host: home-page TerminalShell. Point users at dev mode
       // (which has the inline reader) and the rendered blog page as a
-      // fallback. `node.href` is set by the manifest for blog/notes posts.
+      // fallback. `node.href` is set by the manifest for blog posts.
       const lines: OutputLine[] = []
       if (node.endpoint) {
         lines.push({
@@ -235,7 +235,11 @@ export const commands: CommandRegistry = {
       const target = resolvePath(cwd, args[0])
       const node = getNode(fs, target)
       if (!node) {
-        if (/^\/(blog|notes|search|projects|links|about|contact)(\/|$)/.test(args[0])) {
+        if (
+          /^\/(blog|thoughts|books|movies|photography|search|projects|about|contact)(\/|$)/.test(
+            args[0]
+          )
+        ) {
           push([{ kind: 'text', tone: 'muted', text: `navigating ${args[0]} …` }])
           setTimeout(() => navigate(args[0]), 200)
           return
@@ -259,7 +263,7 @@ export const commands: CommandRegistry = {
 
   search: {
     name: 'search',
-    summary: 'search posts and notes',
+    summary: 'search posts',
     usage: 'search <query>',
     run: async ({ args, push }) => {
       const query = args.join(' ').trim()

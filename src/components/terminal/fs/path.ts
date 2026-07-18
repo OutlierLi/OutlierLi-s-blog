@@ -6,7 +6,7 @@ import type { FsNode } from './types'
  *
  *   resolvePath('/',      'blog')      // '/blog'
  *   resolvePath('/blog',  '..')        // '/'
- *   resolvePath('/blog',  '../notes')  // '/notes'
+ *   resolvePath('/blog',  '../about')  // '/about'
  *   resolvePath('/blog',  '~')         // '/'
  *   resolvePath('/blog',  '/etc/motd') // '/etc/motd'
  *

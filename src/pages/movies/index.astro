@@ -1,0 +1,19 @@
+---
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
+
+const tags = ['movies', 'cinema', 'watchlist']
+---
+
+<PageLayout title='Movies' info={{ slug: '/movies', hideComment: true }}>
+  <p>电影。</p>
+  <div class='not-prose flex flex-wrap gap-2'>
+    {
+      tags.map((tag) => (
+        <Button href='#' style='pill'>
+          {tag}
+        </Button>
+      ))
+    }
+  </div>
+</PageLayout>

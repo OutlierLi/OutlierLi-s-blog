@@ -16,7 +16,7 @@ import type { DirNode, FsNode } from './types'
 export type FsCollectionEntry = {
   id: string
   routeId: string
-  kind: 'blog' | 'blog_en' | 'notes' | 'notes_en' | 'curated' | 'talks'
+  kind: 'blog' | 'blog_en'
   data: {
     title: string
     description?: string
@@ -32,25 +32,13 @@ export type FsCollectionEntry = {
 export type BuildArgs = {
   blog: FsCollectionEntry[]
   blogEn: FsCollectionEntry[]
-  /** notes collection — surfaced as `/notes` in the FS. */
-  notes: FsCollectionEntry[]
-  notesEn: FsCollectionEntry[]
-  curated: FsCollectionEntry[]
-  talks: FsCollectionEntry[]
 }
 
 /**
  * Build the pseudo-FS root from collection data. Pure function: same input
  * always yields the same tree. Called once per page render in BaseLayout.
  */
-export function buildManifest({
-  blog,
-  blogEn,
-  notes,
-  notesEn,
-  curated: _curated,
-  talks
-}: BuildArgs): FsNode {
+export function buildManifest({ blog, blogEn }: BuildArgs): FsNode {
   return {
     type: 'dir',
     name: '',
@@ -60,10 +48,7 @@ export function buildManifest({
       { type: 'file', name: 'about', description: 'bio', content: ABOUT_TEXT },
       { type: 'file', name: 'now', description: 'currently working on', content: NOW_TEXT },
       buildPostsDir('blog', 'recent blog posts', blog, '/blog'),
-      buildPostsDir('notes', 'short-form notes', notes, '/notes'),
       buildPostsDir('blog_en', 'English blog mirrors', blogEn, '/en/blog'),
-      buildPostsDir('notes_en', 'English short-form note mirrors', notesEn, '/en/notes'),
-      buildPostsDir('talks', 'weekly sharing sessions', talks, '/talks'),
       buildContactDir(),
       buildEtcDir(),
       {
@@ -190,8 +175,6 @@ function buildPostDir(p: FsCollectionEntry, hrefRoot: string): DirNode {
 }
 
 function hrefFor(p: FsCollectionEntry, hrefRoot: string): string {
-  if (p.kind === 'curated') return `${hrefRoot}#${encodeURIComponent(p.routeId)}`
-  if (p.kind === 'talks') return `${hrefRoot}#${encodeURIComponent(p.routeId)}`
   return `${hrefRoot}/${encodeURI(p.routeId)}`
 }
 

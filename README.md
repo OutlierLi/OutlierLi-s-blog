@@ -1,15 +1,17 @@
 # Personal Blog Template
 
-这是一个基于 [Astro](https://astro.build/) 和 [Astro Theme Pure](https://astro-pure.js.org/) 改造的个人博客模板，适合搭建技术博客、个人主页、项目展示、notes 知识库和公开分享页面。
+这是一个基于 [Astro](https://astro.build/) 和 [Astro Theme Pure](https://astro-pure.js.org/) 改造的个人博客，当前栏目包括技术文章、随想、读书、电影和摄影。
 
 它不是一个无代码主题，而是一份已经跑过真实内容生产的工程模板。你可以 fork 后替换个人信息，也可以只参考其中的内容组织、双语路由、组件拆分、搜索、评论、agent-facing manifest 和 terminal dev mode。
 
 ## 功能
 
-- Blog：正式文章，支持中英文镜像。
-- Notes：短笔记、研究卡片、未成稿材料和面试题沉淀。
-- Talks：公开分享、幻灯片和活动记录。
-- Projects / About / Contact：个人主页常见页面。
+- Blog：技术文章，支持中英文镜像。
+- Thoughts：随想。
+- Books：读书。
+- Movies：电影。
+- Photography：摄影。
+- About / Contact：个人主页常见页面。
 - 中英文路由、RSS、站内搜索、评论、访问统计、OG 图片和 agent 读取接口。
 
 ## 技术栈
@@ -61,10 +63,8 @@ bun run build
 - `src/assets/avatar.png`: 首页和站点使用的头像。
 - `public/favicon/*`: 浏览器图标和 PWA 图标。
 - `src/content/blog`: 正式文章。
-- `src/content/notes`: notes、研究卡片和未成稿材料。
-- `src/content/talks` 和 `public/talks`: 公开分享、幻灯片或活动记录。
 
-如果你不需要某些页面，例如 talks 或 notes，可以删除对应页面、内容集合和导航项。
+内容频道页面位于 `src/pages/thoughts`、`src/pages/books`、`src/pages/movies` 和 `src/pages/photography`。
 
 ## 内容约定
 
@@ -84,22 +84,6 @@ language: en
 translationKey: '20260615---example-post/post'
 ```
 
-Notes 使用单文件组织：
-
-```text
-src/content/notes/example-note.md
-src/content/notes/example-note.en.md
-```
-
-Notes 的 `status` 可选：
-
-- `in-progress`: 进行中
-- `incomplete`: 待补充
-- `ready`: 已整理
-- `archived`: 已归档
-
-建议只把真正可以公开阅读、且正文里没有明显 `待补充` 段落的内容标成 `ready`。
-
 ## 本地组件清单
 
 这些是当前仓库在主题基础上保留、改造或新增的项目本地组件：
@@ -116,14 +100,11 @@ Notes 的 `status` 可选：
 - `about/Substats.astro`: 关于页外部平台数据/粉丝数展示。
 - `about/ToolSection.astro`: 关于页工具栈展示。
 - `blog/FeatureCalloutCard.astro`: 博客内功能/重点卡片。
-- `blog/TalkEpisodeCard.astro`: 博客内嵌分享会入口卡片。
 - `blog/TalkSlideFigure.astro`: 博客内嵌分享会 slide 图片。
 - `comment/Comment.astro`: Waline 评论挂载。
 - `comment/PageInfo.astro`: 页面浏览量/评论元信息。
 - `comment/ViewCounter.astro`: 浏览量计数。
 - `contact/ContactQR.astro`: 联系页二维码卡片。
-- `curated/CuratedItem.astro`: Curated 单条资料卡。
-- `curated/CuratedLibrary.astro`: Curated 列表、筛选和布局。
 - `home/LinkCard.astro`: 首页外链卡片。
 - `home/ProjectCard.astro`: 首页项目卡片。
 - `home/Section.astro`: 首页通用 section 容器。
@@ -142,7 +123,6 @@ Notes 的 `status` 可选：
 - `projects/Sponsors.astro`: 赞助者列表。
 - `projects/Sponsorship.astro`: 赞助入口。
 - `search/SiteSearch.astro`: 站内搜索 UI（走 /api/search.json，中英文各自索引）。
-- `talks/TalksSeries.astro`: Talks 时间线/系列展示。
 - `terminal/*`: terminal dev mode、pseudo-FS、命令系统、文章 viewer 和样式。
 
 ## 部署

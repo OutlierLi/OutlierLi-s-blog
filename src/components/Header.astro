@@ -20,13 +20,16 @@ const t = useTranslations(lang)
 
 const menuKeyMap: Record<string, Parameters<typeof t>[0]> = {
   '/blog': 'nav.blog',
-  '/notes': 'nav.notes',
+  '/thoughts': 'nav.thoughts',
+  '/books': 'nav.books',
+  '/movies': 'nav.movies',
+  '/photography': 'nav.photography',
   '/projects': 'nav.projects',
   '/about': 'nav.about',
   '/contact': 'nav.contact'
 }
 
-// 英文站只展示有英文镜像的菜单项，避免生成 /en/talks 这类 404 链接
+// 英文站只展示有英文镜像的菜单项，避免生成不存在的 /en/* 链接
 const menu = (config.header?.menu ?? [])
   .filter((item) => lang !== 'en' || hasEnAlternate(item.link))
   .map((item) => {

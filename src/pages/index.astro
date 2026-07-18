@@ -1,7 +1,5 @@
 ---
 import { Image } from 'astro:assets'
-import { getCollection } from 'astro:content'
-import { formatTalkDateCN, sortTalks } from '@/lib/talks'
 import avatar from 'src/assets/avatar.png'
 
 import { Quote } from 'astro-pure/advanced'
@@ -23,25 +21,28 @@ const MAX_POSTS = 5
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
 
-const noteTypeLabels: Record<string, string> = {
-  note: 'Note',
-  snippet: 'Snippet',
-  draft: 'Draft',
-  idea: 'Idea',
-  research: 'Research',
-  reference: 'Reference'
-}
-const latestNotes = (await getCollection('notes'))
-  .filter((entry) => !entry.data.draft)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4)
-
-const talks = sortTalks(
-  (await getCollection('talks')).filter(
-    (talk) => !talk.data.draft && talk.data.status === 'published'
-  )
-)
-const latestTalk = talks[0]
+const channelCards = [
+  {
+    heading: 'Thoughts',
+    subheading: '随想',
+    href: '/thoughts'
+  },
+  {
+    heading: 'Books',
+    subheading: '读书',
+    href: '/books'
+  },
+  {
+    heading: 'Movies',
+    subheading: '电影',
+    href: '/movies'
+  },
+  {
+    heading: 'Photography',
+    subheading: '摄影',
+    href: '/photography'
+  }
+]
 ---
 
 <PageLayout meta={{ title: 'Home' }} highlightColor='#659EB9'>
@@ -123,79 +124,23 @@ const latestTalk = talks[0]
         )
       }
 
-      {
-        latestNotes.length > 0 && (
-          <Section title='Notes'>
-            <ul class='flex flex-col gap-y-1.5 sm:gap-y-2'>
-              {latestNotes.map((note) => (
-                <li class='post-preview group/card flex flex-col relative rounded-2xl border bg-background transition-colors ease-in-out px-5 py-2.5 hover:bg-muted'>
-                  <a
-                    class='group/link w-full flex flex-col sm:flex-row transition-all hover:text-primary'
-                    href={`/notes/${note.id}`}
-                    data-astro-prefetch
-                  >
-                    <span class='min-w-[95px] py-1 text-xs text-muted-foreground'>
-                      {noteTypeLabels[note.data.type] || note.data.type}
-                    </span>
-                    <div class='z-10 flex-grow'>
-                      <div class='flex justify-between'>
-                        <div>{note.data.title}</div>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='16'
-                          height='16'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke-width='2.5'
-                          stroke-linecap='round'
-                          stroke-linejoin='round'
-                          class='my-1 stroke-muted-foreground group-hover/link:stroke-primary'
-                        >
-                          <line
-                            x1='5'
-                            y1='12'
-                            x2='19'
-                            y2='12'
-                            class='translate-x-4 scale-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1 group-hover/link:scale-x-100'
-                          />
-                          <polyline
-                            points='12 5 19 12 12 19'
-                            class='translate-x-0 transition-all duration-300 ease-in-out group-hover/link:translate-x-1'
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
-            <Button title='More notes' class='w-fit self-end' href='/notes' style='ahead' />
-          </Section>
-        )
-      }
-
-      {
-        latestTalk && (
-          <Section title='Talks'>
-            <LinkCard
-              heading={latestTalk.data.title}
-              subheading={latestTalk.data.subtitle ?? ''}
-              date={formatTalkDateCN(latestTalk.data.date)}
-              href='/talks'
-              target='_self'
-            />
-            <Button title='More talks' class='w-fit self-end' href='/talks' style='ahead' />
-          </Section>
-        )
-      }
+      <Section title='Channels'>
+        <div class='grid gap-3 sm:grid-cols-2'>
+          {
+            channelCards.map((card) => (
+              <LinkCard
+                heading={card.heading}
+                subheading={card.subheading}
+                href={card.href}
+                target='_self'
+              />
+            ))
+          }
+        </div>
+      </Section>
 
       <Section title='Education'>
-        <Card
-          as='a'
-          heading="Xi'an University of Electronic Science and Technology"
-          subheading='Bachelor · Internet of Things Engineering'
-          date='2019 - 2023'
-        />
+        <Card as='a' heading='西安电子科技大学' subheading='物联网工程专业' date='2019 - 2023' />
       </Section>
 
       <Section title='GitHub'>

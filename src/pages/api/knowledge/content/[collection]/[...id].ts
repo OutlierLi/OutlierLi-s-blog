@@ -6,11 +6,7 @@ import remarkCjkFriendly from 'remark-cjk-friendly'
 
 const COLLECTIONS = {
   blog: 'blog',
-  blog_en: 'blogEn',
-  notes: 'notes',
-  notes_en: 'notesEn',
-  curated: 'curated',
-  talks: 'talks'
+  blog_en: 'blogEn'
 } as const
 
 type PublicCollection = keyof typeof COLLECTIONS
@@ -115,11 +111,7 @@ function canonicalUrl(collection: PublicCollection, entry: KnowledgeEntry): stri
     collection.endsWith('_en') && entry.data.translationKey ? entry.data.translationKey : entry.id
   const encoded = encodeURI(routeId)
   if (collection === 'blog') return `https://outlierli-s-blog.pages.dev/blog/${encoded}`
-  if (collection === 'blog_en') return `https://outlierli-s-blog.pages.dev/en/blog/${encoded}`
-  if (collection === 'notes') return `https://outlierli-s-blog.pages.dev/notes/${encoded}`
-  if (collection === 'notes_en') return `https://outlierli-s-blog.pages.dev/en/notes/${encoded}`
-  if (collection === 'curated') return `https://outlierli-s-blog.pages.dev/curated#${encodeURIComponent(routeId)}`
-  return `https://outlierli-s-blog.pages.dev/talks#${encodeURIComponent(routeId)}`
+  return `https://outlierli-s-blog.pages.dev/en/blog/${encoded}`
 }
 
 function formatDate(value: Date | string | undefined): string {
