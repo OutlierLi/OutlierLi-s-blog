@@ -45,7 +45,7 @@ const statusCounts = allNotes.reduce(
 )
 
 const meta = {
-  description: 'Agent 学习、工程化选型对比、面试题笔记——未成稿，但都是一手思考',
+  description: 'Personal notes and placeholder entries.',
   title: page.currentPage === 1 ? 'Notes' : `Notes - Page ${page.currentPage}`
 }
 
@@ -115,13 +115,11 @@ const typeColors: Record<string, string> = {
         </div>
         <div>
           <h1 class='text-3xl font-medium'>Notes</h1>
-          <p class='text-sm text-muted-foreground'>一手笔记 · 持续生长中</p>
+          <p class='text-sm text-muted-foreground'>Personal notes</p>
         </div>
       </div>
       <p class='max-w-3xl text-muted-foreground'>
-        这里是我平时沉淀的一手笔记：Agent 学习、工程化选型对比（Embedding、向量库、AI SDK
-        等）、面试里遇到的好题目。
-        还没打磨成博客，但都是最新的思考——比成稿博客更接近"现在在想什么"。
+        This page currently keeps one example note as the starting point for future writing.
       </p>
       <PageInfo class='mt-3 italic' path='/notes' />
     </div>

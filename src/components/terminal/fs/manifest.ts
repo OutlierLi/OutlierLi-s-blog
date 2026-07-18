@@ -43,7 +43,14 @@ export type BuildArgs = {
  * Build the pseudo-FS root from collection data. Pure function: same input
  * always yields the same tree. Called once per page render in BaseLayout.
  */
-export function buildManifest({ blog, blogEn, notes, notesEn, curated, talks }: BuildArgs): FsNode {
+export function buildManifest({
+  blog,
+  blogEn,
+  notes,
+  notesEn,
+  curated: _curated,
+  talks
+}: BuildArgs): FsNode {
   return {
     type: 'dir',
     name: '',
@@ -56,15 +63,14 @@ export function buildManifest({ blog, blogEn, notes, notesEn, curated, talks }: 
       buildPostsDir('notes', 'short-form notes', notes, '/notes'),
       buildPostsDir('blog_en', 'English blog mirrors', blogEn, '/en/blog'),
       buildPostsDir('notes_en', 'English short-form note mirrors', notesEn, '/en/notes'),
-      buildPostsDir('curated', 'curated external readings and digests', curated, '/curated'),
       buildPostsDir('talks', 'weekly sharing sessions', talks, '/talks'),
       buildContactDir(),
       buildEtcDir(),
       {
         type: 'link',
         name: 'manifest',
-        description: 'agent-facing site map (well-known JSON)',
-        href: '/.well-known/joye-manifest.json'
+        description: 'agent-facing site map',
+        href: '/api/knowledge/index.json'
       }
     ]
   }

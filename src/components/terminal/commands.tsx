@@ -13,30 +13,10 @@ type SearchApiResult = {
 }
 
 const MOCK_AGENT_REPLIES: Record<string, string[]> = {
-  default: [
-    'Hey, this is OutlierLi (well, a tiny mock of him).',
-    'Real agent endpoint is wiring up — for now I just rehearse lines.',
-    'Try `chat what are you building?` or `chat hire you?` for canned answers.'
-  ],
-  building: [
-    'Right now: this terminal, an AI persona for the homepage,',
-    'and a few half-finished blog posts about Astro + RSC + agent UX.'
-  ],
-  hire: [
-    'Open to chats — frontend / full-stack / AI-product roles.',
-    'Best path: `mail` (huangdeshiou@gmail.com) or `connect` for socials.'
-  ],
-  stack: [
-    'Astro 5 · React 19 · UnoCSS · TypeScript · deployed on Vercel.',
-    'I lean into server-rendered HTML with small interactive islands.'
-  ]
+  default: ['OutlierLi.', 'stay hungry.']
 }
 
-function pickReply(msg: string): string[] {
-  const m = msg.toLowerCase()
-  if (m.includes('build')) return MOCK_AGENT_REPLIES.building
-  if (m.includes('hire') || m.includes('job') || m.includes('work')) return MOCK_AGENT_REPLIES.hire
-  if (m.includes('stack') || m.includes('tech')) return MOCK_AGENT_REPLIES.stack
+function pickReply(_msg: string): string[] {
   return MOCK_AGENT_REPLIES.default
 }
 
@@ -95,28 +75,9 @@ export const commands: CommandRegistry = {
 
   whoami: {
     name: 'whoami',
-    summary: 'about OutlierLi',
+    summary: 'stay hungry',
     run: ({ push }) => {
-      push([
-        {
-          kind: 'node',
-          node: (
-            <span>
-              <span className='wt-tone-primary'>OutlierLi</span>
-              <span className='wt-tone-muted'> · Frontend developer based in Melbourne</span>
-            </span>
-          )
-        },
-        { kind: 'text', tone: 'muted', text: '  ↳ 2nd-year CS @ University of Melbourne' },
-        { kind: 'text', tone: 'muted', text: '  ↳ AIGC full-stack intern @ Tezign' },
-        {
-          kind: 'text',
-          tone: 'muted',
-          text: '  ↳ stays hungry, stays foolish · plays piano + cello'
-        },
-        { kind: 'spacer' },
-        { kind: 'text', tone: 'muted', text: 'next: try `ls`, `cat about`, or `cd /blog`' }
-      ])
+      push([{ kind: 'text', text: 'stay hungry' }])
     }
   },
 
@@ -373,10 +334,10 @@ export const commands: CommandRegistry = {
 
   manifest: {
     name: 'manifest',
-    summary: 'fetch the agent-facing site map (well-known JSON)',
+    summary: 'fetch the agent-facing site map',
     usage: 'manifest [--url]',
     run: async ({ args, push }) => {
-      const url = '/.well-known/joye-manifest.json'
+      const url = '/api/knowledge/index.json'
       // `manifest --url` just prints the public URL (handy for sharing)
       if (args[0] === '--url' || args[0] === '-u') {
         push([
@@ -489,23 +450,9 @@ export const commands: CommandRegistry = {
 
   mail: {
     name: 'mail',
-    summary: 'send me an email',
+    summary: 'contact placeholder',
     run: ({ push }) => {
-      const href = 'mailto:huangdeshiou@gmail.com?subject=hi%20joye'
-      push([
-        { kind: 'text', tone: 'muted', text: 'opening your mail client…' },
-        {
-          kind: 'node',
-          node: (
-            <a className='wt-link' href={href}>
-              huangdeshiou@gmail.com
-            </a>
-          )
-        }
-      ])
-      setTimeout(() => {
-        if (typeof window !== 'undefined') window.location.href = href
-      }, 200)
+      push([{ kind: 'text', tone: 'muted', text: 'No contact method configured.' }])
     }
   },
 

@@ -1,6 +1,6 @@
 # Personal Blog Template
 
-这是一个基于 [Astro](https://astro.build/) 和 [Astro Theme Pure](https://astro-pure.js.org/) 改造的个人博客模板，适合搭建技术博客、个人主页、项目展示、notes 知识库、精选阅读和公开分享页面。
+这是一个基于 [Astro](https://astro.build/) 和 [Astro Theme Pure](https://astro-pure.js.org/) 改造的个人博客模板，适合搭建技术博客、个人主页、项目展示、notes 知识库和公开分享页面。
 
 它不是一个无代码主题，而是一份已经跑过真实内容生产的工程模板。你可以 fork 后替换个人信息，也可以只参考其中的内容组织、双语路由、组件拆分、搜索、评论、agent-facing manifest 和 terminal dev mode。
 
@@ -8,9 +8,8 @@
 
 - Blog：正式文章，支持中英文镜像。
 - Notes：短笔记、研究卡片、未成稿材料和面试题沉淀。
-- Curated：外部文章、论文、项目的精选与消化。
 - Talks：公开分享、幻灯片和活动记录。
-- Projects / Links / About / Contact：个人主页常见页面。
+- Projects / About / Contact：个人主页常见页面。
 - 中英文路由、RSS、站内搜索、评论、访问统计、OG 图片和 agent 读取接口。
 
 ## 技术栈
@@ -61,13 +60,11 @@ bun run build
 - `src/pages/contact/index.astro` 和 `src/pages/en/contact/index.astro`: 联系方式与二维码展示。
 - `src/assets/avatar.png`: 首页和站点使用的头像。
 - `public/favicon/*`: 浏览器图标和 PWA 图标。
-- `public/links.json`: 友链数据。
 - `src/content/blog`: 正式文章。
 - `src/content/notes`: notes、研究卡片和未成稿材料。
-- `src/content/curated`: 精选外部资料。
 - `src/content/talks` 和 `public/talks`: 公开分享、幻灯片或活动记录。
 
-如果你不需要某些页面，例如 talks、curated、links 或 notes，可以删除对应页面、内容集合和导航项。
+如果你不需要某些页面，例如 talks 或 notes，可以删除对应页面、内容集合和导航项。
 
 ## 内容约定
 
@@ -102,23 +99,6 @@ Notes 的 `status` 可选：
 - `archived`: 已归档
 
 建议只把真正可以公开阅读、且正文里没有明显 `待补充` 段落的内容标成 `ready`。
-
-## 计划中的 Agent Skills
-
-这部分只是规划，当前仓库还没有落地 skill 文件。
-
-1. `deploy-blog-template`
-
-   - 目标：让 agent 能一键部署这个博客模板。
-   - 需要覆盖：依赖安装、环境变量检查、Vercel 项目初始化、域名/站点配置提示、build 验证和部署后 smoke test。
-   - 输入：仓库路径、部署目标、站点域名、评论/Analytics 开关。
-   - 输出：部署 URL、需要人工确认的配置项、失败时的最小排查路径。
-
-2. `materialize-clean-blog-template`
-   - 目标：从当前个人博客生成一个“真空模板”，去掉个人内容，只保留可复用结构。
-   - 需要覆盖：清空或替换 `src/content/*`、头像/favicon/二维码/友链、个人项目、联系方式、公开 talks、analytics 事件中的个人语义。
-   - 输入：模板目标路径、站点名称、作者名、是否保留 demo 内容。
-   - 输出：一个可直接初始化的新博客模板目录，以及替换清单。
 
 ## 本地组件清单
 

@@ -34,7 +34,7 @@ const excludedSitemapPathPatterns = [
   /^\/(?:en\/)?404\/?$/,
   /^\/(?:en\/)?search\/?$/,
   /^\/api(?:\/|$)/,
-  /^\/\.well-known\/joye-manifest\.json$/
+  /^\/\.well-known\/site-manifest\.json$/
 ]
 
 const shouldIncludeInSitemap = (page: string) => {

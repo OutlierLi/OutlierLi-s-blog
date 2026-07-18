@@ -1,16 +1,17 @@
+import { trackSiteEvent } from '@/lib/analytics'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { trackSiteEvent } from '@/lib/analytics'
-
+import JoJo from '../mascot/JoJo'
 import { classifyTerminalCommand } from './analytics'
 import { commands, completeInput } from './commands'
 import { ROOT_LABEL } from './fs/content'
 import { displayPath, getNode } from './fs/path'
 import type { FileNode, FsNode } from './fs/types'
 import PostViewer from './PostViewer'
-import JoJo from '../mascot/JoJo'
+
 import './terminal.css'
 import './devmode.css'
+
 import type { HistoryEntry, OutputLine, Tone } from './types'
 
 type Props = {
@@ -76,12 +77,7 @@ function Prompt({ user, host, cwd }: { user: string; host: string; cwd: string }
   )
 }
 
-export default function DevMode({
-  fs,
-  user = 'joye',
-  host = ROOT_LABEL,
-  onExit
-}: Props) {
+export default function DevMode({ fs, user = 'outlierli', host = ROOT_LABEL, onExit }: Props) {
   const [bootLines, setBootLines] = useState<BootLine[]>([])
   const [bootDone, setBootDone] = useState(false)
   const [entries, setEntries] = useState<RenderEntry[]>([])
@@ -107,12 +103,9 @@ export default function DevMode({
     setEntries((prev) => [...prev, { ...entry, id: newId() }])
   }, [])
 
-  const updateStream = useCallback(
-    (id: string, fn: (e: HistoryEntry) => HistoryEntry) => {
-      setEntries((prev) => prev.map((e) => (e.id === id ? { ...fn(e), id } : e)))
-    },
-    []
-  )
+  const updateStream = useCallback((id: string, fn: (e: HistoryEntry) => HistoryEntry) => {
+    setEntries((prev) => prev.map((e) => (e.id === id ? { ...fn(e), id } : e)))
+  }, [])
 
   const ctxNavigate = useCallback((path: string) => {
     if (typeof window !== 'undefined') window.location.assign(path)
@@ -185,11 +178,11 @@ export default function DevMode({
   // boot sequence: roughly "loading" steps, streamed in
   useEffect(() => {
     const steps: Omit<BootLine, 'ok'>[] = [
-      { t: 0, text: 'booting joye-shell v0.1 …' },
+      { t: 0, text: 'booting outlierli-shell v0.1 …' },
       { t: 180, text: 'loading /etc/personality.conf' },
       { t: 420, text: `mounting /blog (${blogCount} entries)` },
-      { t: 710, text: 'spinning up agent mock on localhost:∞' },
-      { t: 1020, text: 'resolving @mascot/jojo → ok' },
+      { t: 710, text: 'warming up local shell' },
+      { t: 1020, text: 'resolving site state → ok' },
       { t: 1260, text: 'ready.' }
     ]
     const timers: ReturnType<typeof setTimeout>[] = []
@@ -286,9 +279,7 @@ export default function DevMode({
           appendEntry({ kind: 'stream', id, lines: [], done: false })
         },
         appendStream: (id: string, line: OutputLine) => {
-          updateStream(id, (e) =>
-            e.kind === 'stream' ? { ...e, lines: [...e.lines, line] } : e
-          )
+          updateStream(id, (e) => (e.kind === 'stream' ? { ...e, lines: [...e.lines, line] } : e))
         },
         endStream: (id: string) => {
           updateStream(id, (e) => (e.kind === 'stream' ? { ...e, done: true } : e))
@@ -388,10 +379,13 @@ export default function DevMode({
           </div>
           <span className='dev-chrome-title'>dev mode</span>
           <span>·</span>
-          <span>{user}@{host}</span>
+          <span>
+            {user}@{host}
+          </span>
         </div>
         <div className='dev-chrome-hint'>
-          press <span className='wt-kbd'>Esc</span> or type <code className='wt-tone-primary'>exit</code> to leave
+          press <span className='wt-kbd'>Esc</span> or type{' '}
+          <code className='wt-tone-primary'>exit</code> to leave
         </div>
       </div>
 
@@ -422,11 +416,11 @@ export default function DevMode({
               </div>
               <div className='hd-rule'>─────────────────────</div>
               <span className='key'>os</span>
-              <span className='val'>Astro 5 · React 19 · Vercel</span>
+              <span className='val'>Astro 5 · React 19</span>
               <span className='key'>stack</span>
               <span className='val'>TypeScript · UnoCSS · MDX</span>
               <span className='key'>editor</span>
-              <span className='val'>neovim · VS Code · Claude Code</span>
+              <span className='val'>VS Code</span>
               <span className='key'>blog</span>
               <span className='val'>
                 {blogCount} indexed <span className='val-muted'>· `ls /blog`</span>
@@ -434,7 +428,7 @@ export default function DevMode({
               <span className='key'>uptime</span>
               <span className='val'>since Apr 2024</span>
               <span className='key'>locale</span>
-              <span className='val'>Melbourne, AU</span>
+              <span className='val'>Xi'an, China</span>
             </div>
           </div>
         )}
@@ -476,10 +470,7 @@ export default function DevMode({
             <Prompt user={user} host={host} cwd={displayPath(cwd)} />
             <span className='dev-input-display'>
               <span className='wt-tone-fg'>{input}</span>
-              <span
-                className={`dev-caret ${focused ? '' : 'dev-caret--idle'}`}
-                aria-hidden
-              />
+              <span className={`dev-caret ${focused ? '' : 'dev-caret--idle'}`} aria-hidden />
               <input
                 ref={inputRef}
                 className='dev-input-hidden'

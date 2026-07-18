@@ -11,12 +11,11 @@ import { buildSiteFs } from '@/components/terminal/fs/server'
  * the dev-mode terminal renders is exposed here, plus a description
  * and a small dictionary of follow-up endpoints.
  *
- * Companion skill: see github.com/joyehuang/skills/explore-site (TODO).
  */
 
-const SITE_URL = 'https://joyehuang.me'
+const SITE_URL = 'https://outlierli-s-blog.pages.dev'
 
-const INSTRUCTIONS = `You're reading a structured map of Joye Huang's personal site.
+const INSTRUCTIONS = `You're reading a structured map of OutlierLi's personal site.
 
 Quick start:
   - Read the "instructions" field (this) and "description" field for context.
@@ -32,7 +31,7 @@ Suggested first reads: /about, /now, /README. Then ls /blog, /notes,
 /curated and /talks for knowledge entries.
 
 If you're a human exploring this URL: there's a richer interactive
-version at https://joyehuang.me — press \` (backtick) to open dev mode.`
+version at https://outlierli-s-blog.pages.dev — press \` (backtick) to open dev mode.`
 
 export const GET: APIRoute = async () => {
   const tree = await buildSiteFs()
@@ -42,11 +41,8 @@ export const GET: APIRoute = async () => {
     name: ROOT_LABEL,
     site: SITE_URL,
     description:
-      'Joye Huang — frontend / full-stack dev based in Melbourne. ' +
-      'Currently AIGC full-stack intern @ Tezign, building agent-first ' +
-      'web UIs and writing teardowns of agent harnesses (Claude Code, ' +
-      'OpenHarness). The site is a pseudo-FS — posts, notes, curated reads, ' +
-      'talks and contact links live at paths you can `cat` or fetch.',
+      "OutlierLi — an untimely person based in Xi'an, China. The site is a pseudo-FS; " +
+      'posts, notes, curated reads, talks and contact links live at paths you can `cat` or fetch.',
     instructions: INSTRUCTIONS,
     tree,
     endpoints: {
@@ -70,7 +66,7 @@ export const GET: APIRoute = async () => {
         note: 'Legacy endpoint kept for the terminal viewer; prefer content_entry for indexing.'
       },
       well_known_manifest: {
-        url: `${SITE_URL}/.well-known/joye-manifest.json`,
+        url: `${SITE_URL}/.well-known/site-manifest.json`,
         method: 'GET',
         format: 'json',
         note: 'this document'

@@ -9,7 +9,7 @@ export const theme: ThemeUserConfig = {
   /** Description metadata for your website. Can be used in page metadata. */
   description: 'Stay hungry, stay foolish',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
-  favicon: '/favicon/favicon.ico',
+  favicon: '/favicon/avatar.png',
   /** Specify the default language for this site. */
   locale: {
     lang: 'zh-CN',
@@ -51,7 +51,6 @@ export const theme: ThemeUserConfig = {
       { title: 'Notes', link: '/notes' },
       { title: 'Talks', link: '/talks' },
       { title: 'Projects', link: '/projects' },
-      { title: 'Links', link: '/links' },
       { title: 'About', link: '/about' },
       { title: 'Contact', link: '/contact' }
     ]
@@ -80,40 +79,8 @@ export const theme: ThemeUserConfig = {
 }
 
 export const integ: IntegrationUserConfig = {
-  // Links management
-  // See: https://astro-pure.js.org/docs/integrations/links
   links: {
-    // Friend logbook
-    logbook: [
-      { date: '2025-07-04', content: '友链页面就绪，等第一位朋友。' },
-      {
-        date: '2025-11-04',
-        content: '收到首位友链：<a href="https://sanbaiblog.cn/" target="_blank">一清三白</a>。'
-      },
-      {
-        date: '2026-04-19',
-        content: '添加 <a href="https://www.wengxiaoxiong.com/" target="_blank">翁小雄</a>。'
-      },
-      {
-        date: '2026-04-27',
-        content:
-          '一天添加三位友链：<a href="http://www.windchant.online/" target="_blank">YinFeng\'s Blog</a>、<a href="https://kyc001.github.io/" target="_blank">Crayon</a>、<a href="https://evanlin.site/" target="_blank">Evan Lin</a>。'
-      },
-      {
-        date: '2026-04-28',
-        content:
-          '添加 <a href="https://blog.forhermajesty.com/" target="_blank">Queen\'s DevLog</a>、<a href="https://limening.vercel.app/" target="_blank">Lime\'s Blog</a> 与 <a href="https://bigeartutu.beauty/" target="_blank">大耳朵图图</a>。'
-      },
-      {
-        date: '2026-06-06',
-        content:
-          '添加 <a href="https://blog.cooingcode.space" target="_blank">Cooing\'s Blog</a> 与 <a href="https://blog.joshua2008.top" target="_blank">Joshua Chen Personal Blog</a>。'
-      },
-      {
-        date: '2026-06-25',
-        content: '添加 <a href="https://cxin.vercel.app/" target="_blank">Cxin Blog</a>。'
-      }
-    ],
+    logbook: [],
     // Yourself link info
     applyTip: [
       { name: 'Name', val: theme.title },
