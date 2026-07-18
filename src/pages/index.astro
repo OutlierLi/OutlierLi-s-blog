@@ -75,19 +75,8 @@ const channelCards = [
         </div>
       </div>
 
-      <div class='flex flex-row gap-3'>
-        <a
-          href='/contact'
-          class='flex flex-row items-center gap-x-3 rounded-full border bg-background px-4 py-2 text-sm shadow-sm transition-shadow hover:shadow-md'
-        >
-          <span class='relative flex items-center justify-center'>
-            <span
-              class='absolute size-2 animate-ping rounded-full border border-green-400 bg-green-400 opacity-75'
-            ></span>
-            <span class='size-2 rounded-full bg-green-400'></span>
-          </span>
-          <p class='font-medium text-muted-foreground'>Connect Me!</p>
-        </a>
+      <div class='home-typewriter' aria-label='An untimely person ....'>
+        <span>An untimely person ....</span>
       </div>
     </section>
 
@@ -154,3 +143,36 @@ const channelCards = [
     </div>
   </div>
 </PageLayout>
+
+<style>
+  .home-typewriter {
+    max-width: 100%;
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.95rem;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .home-typewriter span {
+    display: inline-block;
+    width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 0.12em solid currentColor;
+    animation:
+      home-typewriter 2.4s steps(23, end) forwards,
+      home-caret 0.85s step-end infinite;
+  }
+
+  @keyframes home-typewriter {
+    to {
+      width: 23ch;
+    }
+  }
+
+  @keyframes home-caret {
+    50% {
+      border-color: transparent;
+    }
+  }
+</style>
