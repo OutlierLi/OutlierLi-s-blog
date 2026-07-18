@@ -9,6 +9,7 @@ const typographyConfig = {
     // Title
     'h2,h3,h4,h5,h6': {
       'scroll-margin-top': '3rem',
+      'font-family': 'var(--font-sans)',
       'font-weight': '500',
       color: fg
     },
@@ -119,8 +120,12 @@ const typographyConfig = {
       color: fg
     },
     'code:not(pre code)': {
+      'font-family': 'var(--font-mono)',
       'white-space': 'pre-wrap!important',
       'word-break': 'break-all!important'
+    },
+    'pre,pre code,kbd,samp': {
+      'font-family': 'var(--font-mono)'
     }
   }
 }
@@ -187,7 +192,11 @@ export default defineConfig({
   ],
   rules,
   theme: {
-    colors: themeColors
+    colors: themeColors,
+    fontFamily: {
+      sans: 'var(--font-sans)',
+      mono: 'var(--font-mono)'
+    }
   },
   // https://unocss.dev/guide/extracting#limitations
   safelist: [

@@ -11,6 +11,7 @@
         "@astrojs/sitemap": "^3.4.1",
         "@astrojs/vercel": "9.0.5",
         "@fontsource-variable/geist": "^5.2.9",
+        "@fontsource-variable/jetbrains-mono": "^5.2.8",
         "@neondatabase/serverless": "^1.1.0",
         "@playform/compress": "^0.1.9",
         "@resvg/resvg-js": "^2.6.2",
@@ -26,6 +27,7 @@
         "base64-js": "^1.5.1",
         "gsap": "^3.13.0",
         "katex": "^0.16.22",
+        "lxgw-wenkai-screen-webfont": "^1.7.0",
         "react": "^19.2.4",
         "react-dom": "^19.2.4",
         "rehype-katex": "^7.0.1",
@@ -212,6 +214,8 @@
     "@eslint/plugin-kit": ["@eslint/plugin-kit@0.3.1", "https://registry.npmmirror.com/@eslint/plugin-kit/-/plugin-kit-0.3.1.tgz", { "dependencies": { "@eslint/core": "^0.14.0", "levn": "^0.4.1" } }, "sha512-0J+zgWxHN+xXONWIyPWKFMgVuJoZuGiIFu8yxk7RJjxkzpGmyja5wRFqZIVtjDVOQpV+Rw0iOAjYPE2eQyjr0w=="],
 
     "@fontsource-variable/geist": ["@fontsource-variable/geist@5.2.9", "", {}, "sha512-TP+QSBG3wxKGPE33CbMy/L0Nu3qvJ6Fy81Yc4LnQ95xH+i+cfEp8fyU8/kfV14YwszxIFPhnoMTbjL71waVpyQ=="],
+
+    "@fontsource-variable/jetbrains-mono": ["@fontsource-variable/jetbrains-mono@5.2.8", "", {}, "sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q=="],
 
     "@humanfs/core": ["@humanfs/core@0.19.1", "https://registry.npmmirror.com/@humanfs/core/-/core-0.19.1.tgz", {}, "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="],
 
@@ -1118,6 +1122,8 @@
     "lower-case": ["lower-case@2.0.2", "https://registry.npmmirror.com/lower-case/-/lower-case-2.0.2.tgz", { "dependencies": { "tslib": "^2.0.3" } }, "sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg=="],
 
     "lru-cache": ["lru-cache@10.4.3", "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.4.3.tgz", {}, "sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ=="],
+
+    "lxgw-wenkai-screen-webfont": ["lxgw-wenkai-screen-webfont@1.7.0", "", {}, "sha512-xvfF4V26Mb335xKg3uxljz+V2nq4F5ek0ku9pmyKgT0Dzo/d2rHi7WpnqgvM9mlXAcAKOrxrcDmUZiIs/ZQ9bQ=="],
 
     "magic-string": ["magic-string@0.30.17", "https://registry.npmmirror.com/magic-string/-/magic-string-0.30.17.tgz", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.0" } }, "sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA=="],
 
