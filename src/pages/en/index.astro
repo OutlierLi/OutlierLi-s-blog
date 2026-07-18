@@ -164,13 +164,22 @@ const channelCards = [
     white-space: nowrap;
     border-right: 0.12em solid currentColor;
     animation:
-      home-typewriter 2.4s steps(23, end) forwards,
+      home-typewriter 5.6s steps(23, end) infinite,
       home-caret 0.85s step-end infinite;
   }
 
   @keyframes home-typewriter {
-    to {
+    0% {
+      width: 0;
+    }
+
+    40%,
+    62% {
       width: 23ch;
+    }
+
+    100% {
+      width: 0;
     }
   }
 

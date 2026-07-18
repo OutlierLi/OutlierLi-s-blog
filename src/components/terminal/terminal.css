@@ -9,16 +9,6 @@
   line-height: 1.5;
   color: hsl(var(--muted-foreground));
 }
-.wt-intro-tag {
-  font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: 11.5px;
-  letter-spacing: 0.04em;
-  color: hsl(var(--muted-foreground) / 0.8);
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: hsl(var(--muted) / 0.55);
-  border: 1px dashed hsl(var(--border));
-}
 .wt-intro-text code {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
   font-size: 12px;
