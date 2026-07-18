@@ -1,227 +1,103 @@
 ---
-import Layout from "@layouts/Layout.astro";
-import Header from "@components/Header.astro";
-import Footer from "@components/Footer.astro";
-import LinkButton from "@components/LinkButton.astro";
-import Hr from "@components/Hr.astro";
-import Card from "@components/Card";
-import Socials from "@components/Socials.astro";
-import getAllPosts from "@utils/getAllPosts";
-import getSortedPosts from "@utils/getSortedPosts";
-import getPostsForSection from "@utils/getPostsForSection";
-import { CONTENT_SECTIONS } from "../data/contentSections";
-import { SITE, SOCIALS } from "@config";
+import { Image } from 'astro:assets'
 
-const posts = await getAllPosts(({ data }) => !data.draft);
-const sortedPosts = getSortedPosts(posts);
-const latestPosts = sortedPosts.slice(0, 5);
-const socialCount = SOCIALS.filter(social => social.active).length;
+import { PostPreview } from 'astro-pure/components/pages'
+import { getBlogCollection, sortMDByDate } from 'astro-pure/server'
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/BaseLayout.astro'
+import avatar from '@/assets/avatar.svg'
+import { contentSections } from '@/lib/content-sections'
+import config from '@/site-config'
 
-const sectionStats = CONTENT_SECTIONS.map(section => ({
-  ...section,
-  count: getPostsForSection(posts, section.key).length,
-}));
+export const prerender = true
 
-const focusAreas = [
-  "AI",
-  "software-engineering",
-  "photography",
-  "reading",
-  "film",
-  "personal-knowledge",
-];
+const latestPosts = sortMDByDate(await getBlogCollection()).slice(0, 5)
+const updatedAt = new Intl.DateTimeFormat('zh-CN', {
+  dateStyle: 'medium',
+  timeStyle: 'short',
+  timeZone: 'Asia/Shanghai'
+}).format(new Date())
+
+const channels = [
+  {
+    title: '技术文章',
+    href: '/blog',
+    description: '长期技术文章、项目复盘、工程实践与工具链记录。',
+    tag: 'tech'
+  },
+  ...Object.values(contentSections).map((section) => ({
+    title: section.title,
+    href: `/${section.tag === 'film' ? 'films' : section.tag === 'thought' ? 'thoughts' : section.tag}`,
+    description: section.description,
+    tag: section.tag
+  }))
+]
 ---
 
-<Layout>
-  <Header />
-  <main id="main-content">
-    <section id="hero">
-      <p class="eyebrow">~/outerli</p>
-      <h1>OuterLi Blog</h1>
-      <p class="hero-copy">
-        记录技术文章、摄影、读书、观影和随想。这里先保持克制，把内容结构搭稳，再逐步长出个人风格。
-      </p>
-      <div class="hero-actions">
-        <LinkButton href="/tech/">进入技术文章</LinkButton>
-        <LinkButton
-          href="/about/"
-          className="underline decoration-dashed underline-offset-4 hover:text-skin-accent"
-        >
-          关于
-        </LinkButton>
-      </div>
-      {
-        socialCount > 0 && (
-          <div class="social-wrapper">
-            <div class="social-links">Links:</div>
-            <Socials />
-          </div>
-        )
-      }
-    </section>
-
-    <Hr />
-
-    <section class="home-section">
-      <div class="section-heading">
-        <p>About</p>
-        <h2>个人主页入口</h2>
-      </div>
-      <p>
-        这是 OuterLi
-        的个人博客首页。当前版本先完成多栏目结构，后续会继续补齐作品、经历、摄影集、书影音记录和长期随想。
-      </p>
-      <div class="section-action">
-        <LinkButton href="/about/">More about me</LinkButton>
+<PageLayout meta={{ title: 'Home', description: config.description }} highlightColor='#0ea5a4'>
+  <main class='flex w-full flex-col gap-y-12'>
+    <section class='animate grid gap-8 pt-6 sm:grid-cols-[auto_1fr] sm:items-center sm:pt-10'>
+      <Image
+        src={avatar}
+        alt='OuterLi'
+        class='size-28 rounded-2xl border bg-background p-2 shadow-sm'
+        loading='eager'
+      />
+      <div class='max-w-3xl'>
+        <p class='mb-2 text-sm font-medium text-muted-foreground'>Personal technology and life notes</p>
+        <h1 class='text-4xl font-semibold tracking-normal sm:text-5xl'>{config.title}</h1>
+        <p class='mt-4 text-base leading-8 text-muted-foreground sm:text-lg'>
+          我是 OuterLi。这里会记录技术文章、摄影、读书、观影和随想，把可复用的经验、阶段性的观察和真实生活片段放在同一个地方。
+        </p>
+        <div class='mt-6 flex flex-wrap gap-3'>
+          <Button title='阅读文章' href='/blog' style='ahead' />
+          <Button title='关于我' href='/about' />
+        </div>
       </div>
     </section>
 
-    <section class="home-section">
-      <div class="section-heading">
-        <p>Channels</p>
-        <h2>内容频道</h2>
-      </div>
-      <div class="section-grid">
+    <section class='animate'>
+      <h2 class='mb-4 text-2xl font-medium'>栏目</h2>
+      <div class='grid gap-3 sm:grid-cols-2 lg:grid-cols-3'>
         {
-          sectionStats.map(section => (
-            <a href={section.href} class="section-card">
-              <div>
-                <span>{section.key}</span>
-                <h3>{section.title}</h3>
+          channels.map((channel) => (
+            <a
+              href={channel.href}
+              class='rounded-lg border bg-background p-4 no-underline transition-colors hover:bg-muted'
+            >
+              <div class='flex items-center justify-between gap-3'>
+                <h3 class='text-lg font-semibold'>{channel.title}</h3>
+                <span class='rounded-full border px-2 py-0.5 text-xs text-muted-foreground'>
+                  {channel.tag}
+                </span>
               </div>
-              <p>{section.description}</p>
-              <strong>{section.count}</strong>
+              <p class='mt-2 text-sm leading-6 text-muted-foreground'>{channel.description}</p>
             </a>
           ))
         }
       </div>
     </section>
 
-    {
-      latestPosts.length > 0 && (
-        <section class="home-section">
-          <div class="section-heading">
-            <p>Latest</p>
-            <h2>最新内容</h2>
-          </div>
-          <ul>
-            {latestPosts.map(({ data, slug }) => (
-              <Card href={`/posts/${slug}/`} frontmatter={data} />
+    <section class='animate'>
+      <div class='mb-4 flex items-end justify-between gap-4'>
+        <h2 class='text-2xl font-medium'>最新内容</h2>
+        <a href='/blog' class='text-sm text-muted-foreground hover:text-primary'>全部文章</a>
+      </div>
+      {
+        latestPosts.length === 0 ? (
+          <p class='text-muted-foreground'>初始化完成，新的内容正在准备中。</p>
+        ) : (
+          <ul class='flex flex-col gap-y-4'>
+            {latestPosts.map((post) => (
+              <PostPreview {post} detailed />
             ))}
           </ul>
-          <div class="section-action">
-            <LinkButton href="/posts/">All posts</LinkButton>
-          </div>
-        </section>
-      )
-    }
-
-    <section class="home-section">
-      <div class="section-heading">
-        <p>Focus</p>
-        <h2>当前关注</h2>
-      </div>
-      <ul class="focus-list">
-        {focusAreas.map(area => <li>{area}</li>)}
-      </ul>
+        )
+      }
     </section>
 
-    <section class="home-section stats-section">
-      <div>
-        <strong>{posts.length}</strong>
-        <span>posts</span>
-      </div>
-      <div>
-        <strong>{CONTENT_SECTIONS.length}</strong>
-        <span>channels</span>
-      </div>
-      <div>
-        <strong>{SITE.author}</strong>
-        <span>author</span>
-      </div>
+    <section class='animate border-t py-5 text-sm text-muted-foreground'>
+      Last updated: {updatedAt}
     </section>
   </main>
-
-  <Footer />
-</Layout>
-
-<style>
-  #main-content {
-    @apply mx-auto w-full max-w-5xl px-4;
-  }
-  #hero {
-    @apply py-10 sm:py-14;
-  }
-  .eyebrow {
-    @apply my-0 text-sm font-semibold uppercase text-skin-accent;
-  }
-  #hero h1 {
-    @apply my-4 text-4xl font-bold sm:text-6xl;
-  }
-  .hero-copy {
-    @apply max-w-2xl text-lg leading-8;
-  }
-  .hero-actions {
-    @apply mt-6 flex flex-wrap items-center gap-4;
-  }
-  .social-wrapper {
-    @apply mt-6 flex flex-col sm:flex-row sm:items-center;
-  }
-  .social-links {
-    @apply mb-1 mr-2 whitespace-nowrap sm:mb-0;
-  }
-  .home-section {
-    @apply py-10;
-  }
-  .home-section > p {
-    @apply max-w-3xl leading-7;
-  }
-  .section-heading {
-    @apply mb-5;
-  }
-  .section-heading p {
-    @apply my-0 text-sm font-semibold uppercase text-skin-accent;
-  }
-  .section-heading h2 {
-    @apply mt-1 text-2xl font-semibold;
-  }
-  .section-action {
-    @apply mt-5;
-  }
-  .section-grid {
-    @apply grid gap-4 sm:grid-cols-2;
-  }
-  .section-card {
-    @apply flex min-h-44 flex-col justify-between rounded border border-skin-line p-4 transition-colors hover:border-skin-accent;
-  }
-  .section-card span {
-    @apply text-sm font-semibold text-skin-accent;
-  }
-  .section-card h3 {
-    @apply mt-2 text-xl font-semibold;
-  }
-  .section-card p {
-    @apply my-4 text-sm leading-6 opacity-80;
-  }
-  .section-card strong {
-    @apply text-2xl;
-  }
-  .focus-list {
-    @apply flex flex-wrap gap-2;
-  }
-  .focus-list li {
-    @apply rounded border border-skin-line px-3 py-1 text-sm;
-  }
-  .stats-section {
-    @apply grid gap-4 sm:grid-cols-3;
-  }
-  .stats-section div {
-    @apply border-l-4 border-skin-accent py-2 pl-4;
-  }
-  .stats-section strong {
-    @apply block text-2xl;
-  }
-  .stats-section span {
-    @apply text-sm opacity-70;
-  }
-</style>
+</PageLayout>

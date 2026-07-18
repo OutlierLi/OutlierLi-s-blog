@@ -1,0 +1,39 @@
+---
+import { Button } from 'astro-pure/user'
+import PageLayout from '@/layouts/CommonPage.astro'
+
+const headings = [
+  { depth: 2, slug: 'profile', text: 'Profile' },
+  { depth: 2, slug: 'focus', text: 'Focus' },
+  { depth: 2, slug: 'site', text: 'Site' }
+]
+---
+
+<PageLayout title='关于' {headings}>
+  <p>你好，我是 OuterLi。</p>
+  <p>
+    这个网站是我的个人技术品牌主页，也会放一些生活侧的长期记录。技术文章会偏向工程实践、AI
+    工具链、产品构建和个人项目复盘；摄影、读书、观影和随想则用来保存更松弛的观察。
+  </p>
+
+  <h2 id='profile'>Profile</h2>
+  <p>
+    我希望这个站点既能承载可检索的正式文章，也能容纳不那么完整但真实有价值的阶段性想法。
+  </p>
+
+  <h2 id='focus'>Focus</h2>
+  <ul>
+    <li>AI 与软件工程工作流</li>
+    <li>个人知识系统与内容发布</li>
+    <li>Web 产品设计与前端工程</li>
+    <li>影像、阅读和长期主义记录</li>
+  </ul>
+
+  <h2 id='site'>Site</h2>
+  <p>
+    当前站点已全量迁移到 joyehuang/blog 的开源模板底座，并基于 Astro 5、Astro Theme Pure
+    和 UnoCSS 重新整理为 OuterLi Blog。
+  </p>
+
+  <Button title='GitHub' href='https://github.com/OutlierLi' style='ahead' />
+</PageLayout>

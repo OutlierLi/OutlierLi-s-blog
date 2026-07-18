@@ -1,0 +1,241 @@
+<outerli-site-search>
+  <aside class='form my-4'>
+    <div id='local-site-search' class='local-search'>
+      <input
+        id='local-search-input'
+        class='local-search-input'
+        type='search'
+        placeholder='Search posts...'
+        autocomplete='off'
+        spellcheck='false'
+        aria-label='Search posts'
+      />
+      <div id='local-search-status' class='local-search-status' aria-live='polite'></div>
+      <ol id='local-search-results' class='local-search-results'></ol>
+    </div>
+  </aside>
+</outerli-site-search>
+
+<script>
+  type LocalSearchResult = {
+    collection: 'blog'
+    title: string
+    description?: string
+    url: string
+    date: string
+    tags: string[]
+    body: string
+  }
+
+  type RenderedSearchResult = Omit<LocalSearchResult, 'body'> & {
+    excerpt: string
+    score: number
+  }
+
+  class OuterLiSiteSearch extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.ready === 'true') return
+      this.dataset.ready = 'true'
+
+      const input = this.querySelector<HTMLInputElement>('#local-search-input')
+      const status = this.querySelector<HTMLElement>('#local-search-status')
+      const results = this.querySelector<HTMLOListElement>('#local-search-results')
+      if (!input || !status || !results) return
+
+      let timer: ReturnType<typeof setTimeout> | undefined
+      let docs: LocalSearchResult[] | undefined
+
+      const renderResults = (items: RenderedSearchResult[]) => {
+        results.replaceChildren(...items.map((item) => createResultItem(item)))
+      }
+
+      const runSearch = async () => {
+        const query = input.value.trim()
+        if (query.length < 2) {
+          status.textContent = ''
+          results.replaceChildren()
+          return
+        }
+
+        try {
+          const loadedDocs: LocalSearchResult[] =
+            docs ??
+            (await fetch('/api/search.json').then((response) => {
+              if (!response.ok) throw new Error(`HTTP ${response.status}`)
+              return response.json() as Promise<LocalSearchResult[]>
+            }))
+          docs = loadedDocs
+          const matches = loadedDocs
+            .map((doc) => scoreDoc(doc, query))
+            .filter((item): item is RenderedSearchResult => Boolean(item))
+            .sort((a, b) => b.score - a.score || b.date.localeCompare(a.date))
+            .slice(0, 10)
+
+          renderResults(matches)
+          status.textContent =
+            matches.length === 0
+              ? 'No results.'
+              : `${matches.length} result${matches.length === 1 ? '' : 's'}`
+        } catch {
+          status.textContent = 'Search failed.'
+          results.replaceChildren()
+        }
+      }
+
+      input.addEventListener('input', () => {
+        if (timer) clearTimeout(timer)
+        timer = setTimeout(runSearch, 180)
+      })
+    }
+  }
+
+  function scoreDoc(doc: LocalSearchResult, query: string): RenderedSearchResult | null {
+    const terms = tokenize(query)
+    if (terms.length === 0) return null
+
+    const title = doc.title.toLowerCase()
+    const description = (doc.description ?? '').toLowerCase()
+    const tags = doc.tags.join(' ').toLowerCase()
+    const body = doc.body.toLowerCase()
+    const haystack = `${title} ${description} ${tags} ${body}`
+
+    let score = 0
+    for (const term of terms) {
+      if (!haystack.includes(term)) return null
+      if (title.includes(term)) score += 12
+      if (description.includes(term)) score += 7
+      if (tags.includes(term)) score += 5
+      score += countOccurrences(body, term)
+    }
+
+    return {
+      collection: doc.collection,
+      title: doc.title,
+      description: doc.description,
+      url: doc.url,
+      date: doc.date,
+      tags: doc.tags,
+      excerpt: makeExcerpt(doc, terms),
+      score
+    }
+  }
+
+  function tokenize(query: string) {
+    const normalized = query.toLowerCase().trim()
+    const parts = normalized.split(/\s+/).filter(Boolean)
+    return parts.length > 1 ? parts : normalized.length >= 2 ? [normalized] : []
+  }
+
+  function countOccurrences(text: string, term: string) {
+    let count = 0
+    let idx = text.indexOf(term)
+    while (idx !== -1) {
+      count += 1
+      idx = text.indexOf(term, idx + term.length)
+    }
+    return count
+  }
+
+  function makeExcerpt(doc: LocalSearchResult, terms: string[]) {
+    const source = doc.body || doc.description || doc.title
+    const lower = source.toLowerCase()
+    const hit = terms
+      .map((term) => lower.indexOf(term))
+      .filter((idx) => idx >= 0)
+      .sort((a, b) => a - b)[0]
+
+    const start = Math.max(0, (hit ?? 0) - 52)
+    const end = Math.min(source.length, start + 168)
+    const prefix = start > 0 ? '...' : ''
+    const suffix = end < source.length ? '...' : ''
+    return `${prefix}${source.slice(start, end).trim()}${suffix}`
+  }
+
+  function createResultItem(item: RenderedSearchResult) {
+    const li = document.createElement('li')
+    li.className = 'local-search-item'
+
+    const link = document.createElement('a')
+    link.className = 'local-search-title'
+    link.href = item.url
+    link.textContent = item.title
+
+    const meta = document.createElement('div')
+    meta.className = 'local-search-meta'
+    meta.textContent = ['Blog', item.date].filter(Boolean).join(' · ')
+
+    const excerpt = document.createElement('p')
+    excerpt.className = 'local-search-excerpt'
+    excerpt.textContent = item.excerpt || item.description || ''
+
+    li.append(link, meta, excerpt)
+    return li
+  }
+
+  if (!customElements.get('outerli-site-search')) {
+    customElements.define('outerli-site-search', OuterLiSiteSearch)
+  }
+</script>
+
+<style>
+  .local-search {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .local-search-input {
+    width: 100%;
+    min-height: 3.15rem;
+    border: 2px solid hsl(var(--border));
+    border-radius: calc(var(--radius) + 2px);
+    background: transparent;
+    color: hsl(var(--foreground));
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-size: 1rem;
+    outline: none;
+  }
+
+  .local-search-input:focus {
+    border-color: hsl(var(--foreground));
+  }
+
+  .local-search-status {
+    min-height: 1.2rem;
+    color: hsl(var(--muted-foreground));
+    font-size: 0.9rem;
+  }
+
+  .local-search-results {
+    display: grid;
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .local-search-item {
+    border: 1px solid hsl(var(--border));
+    border-radius: calc(var(--radius) + 2px);
+    padding: 0.85rem 1rem;
+    background: hsl(var(--muted) / 0.35);
+  }
+
+  .local-search-title {
+    color: hsl(var(--foreground));
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .local-search-title:hover {
+    color: hsl(var(--primary));
+  }
+
+  .local-search-meta,
+  .local-search-excerpt {
+    color: hsl(var(--muted-foreground));
+    font-size: 0.9rem;
+  }
+</style>

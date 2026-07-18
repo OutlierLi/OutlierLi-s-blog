@@ -1,40 +1,135 @@
-import { defineConfig } from "astro/config";
-import tailwind from "@astrojs/tailwind";
-import react from "@astrojs/react";
-import remarkToc from "remark-toc";
-import remarkCollapse from "remark-collapse";
-import sitemap from "@astrojs/sitemap";
-import { SITE } from "./src/config";
+import { copyFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { fileURLToPath } from 'node:url'
+import type { AstroIntegration } from 'astro'
+import { rehypeHeadingIds } from '@astrojs/markdown-remark'
+import react from '@astrojs/react'
+import sitemap from '@astrojs/sitemap'
+import AstroPureIntegration from 'astro-pure'
+import { defineConfig } from 'astro/config'
+import rehypeKatex from 'rehype-katex'
+import remarkCjkFriendly from 'remark-cjk-friendly'
+import remarkMath from 'remark-math'
 
-// https://astro.build/config
+import rehypeAutolinkHeadings from './src/plugins/rehype-auto-link-headings.ts'
+import remarkReadingTime from './src/plugins/remark-reading-time.ts'
+import {
+  addCopyButton,
+  addLanguage,
+  addTitle,
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  updateStyle
+} from './src/plugins/shiki-transformers.ts'
+import config from './src/site.config.ts'
+
+const excludedSitemapPathPatterns = [/^\/404\/?$/, /^\/search\/?$/, /^\/api(?:\/|$)/]
+
+const shouldIncludeInSitemap = (page: string) => {
+  const { pathname } = new URL(page)
+  return !excludedSitemapPathPatterns.some((pattern) => pattern.test(pathname))
+}
+
+const exposeSingleSitemap = (): AstroIntegration => ({
+  name: 'expose-single-sitemap',
+  hooks: {
+    'astro:build:done': async ({ dir }) => {
+      const outputDir = fileURLToPath(dir)
+      await copyFile(join(outputDir, 'sitemap-0.xml'), join(outputDir, 'sitemap.xml'))
+    }
+  }
+})
+
+const bilingualReadingTime = (): AstroIntegration => ({
+  name: 'bilingual-reading-time',
+  hooks: {
+    'astro:config:setup': ({ updateConfig }) => {
+      updateConfig({
+        markdown: {
+          remarkPlugins: [remarkReadingTime]
+        }
+      })
+    }
+  }
+})
+
 export default defineConfig({
-  site: SITE.website,
+  site: 'https://outlierli-s-blog.pages.dev',
+  trailingSlash: 'never',
+  output: 'static',
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp'
+    }
+  },
   integrations: [
-    tailwind({
-      applyBaseStyles: false,
+    sitemap({
+      filter: shouldIncludeInSitemap
     }),
-    react(),
-    sitemap(),
+    exposeSingleSitemap(),
+    AstroPureIntegration(config),
+    bilingualReadingTime(),
+    react()
   ],
+  prefetch: true,
+  server: {
+    host: true
+  },
   markdown: {
-    remarkPlugins: [
-      remarkToc,
+    remarkPlugins: [remarkMath, remarkCjkFriendly],
+    rehypePlugins: [
+      [rehypeKatex, {}],
+      rehypeHeadingIds,
       [
-        remarkCollapse,
+        rehypeAutolinkHeadings,
         {
-          test: "Table of contents",
-        },
-      ],
+          behavior: 'append',
+          properties: { className: ['anchor'] },
+          content: { type: 'text', value: '#' }
+        }
+      ]
     ],
     shikiConfig: {
-      theme: "one-dark-pro",
-      wrap: true,
-    },
+      themes: {
+        light: 'github-light',
+        dark: 'github-dark'
+      },
+      transformers: [
+        transformerNotationDiff(),
+        transformerNotationHighlight(),
+        updateStyle(),
+        addTitle(),
+        addLanguage(),
+        addCopyButton(2000)
+      ] as NonNullable<NonNullable<import('astro').AstroUserConfig['markdown']>['shikiConfig']>['transformers']
+    }
+  },
+  experimental: {
+    contentIntellisense: true
   },
   vite: {
-    optimizeDeps: {
-      exclude: ["@resvg/resvg-js"],
+    resolve: {
+      dedupe: ['react', 'react-dom']
     },
-  },
-  scopedStyleStrategy: "where",
-});
+    ssr: {
+      external: ['@resvg/resvg-js'],
+      noExternal: ['satori']
+    },
+    optimizeDeps: {
+      include: ['satori', 'base64-js'],
+      esbuildOptions: {
+        plugins: [
+          {
+            name: 'externalize-virtual-modules',
+            setup(build) {
+              build.onResolve({ filter: /^virtual:/ }, (args) => ({
+                path: args.path,
+                external: true
+              }))
+            }
+          }
+        ]
+      }
+    }
+  }
+})

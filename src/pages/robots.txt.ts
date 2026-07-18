@@ -1,17 +1,19 @@
-import type { APIRoute } from "astro";
-import { SITE } from "@config";
+import type { APIRoute } from 'astro'
 
-const robots = `
-User-agent: Googlebot
-Disallow: /nogooglebot/
+export const prerender = true
 
-User-agent: *
-Allow: /
-
-Sitemap: ${new URL("sitemap-index.xml", SITE.website).href}
-`.trim();
+const site = import.meta.env.SITE
+const robotsTxt = [
+  'User-agent: *',
+  'Allow: /',
+  'Disallow: /api/',
+  '',
+  `Sitemap: ${new URL('/sitemap.xml', site).href}`
+].join('\n')
 
 export const GET: APIRoute = () =>
-  new Response(robots, {
-    headers: { "Content-Type": "text/plain" },
-  });
+  new Response(robotsTxt, {
+    headers: {
+      'Content-Type': 'text/plain; charset=utf-8'
+    }
+  })
