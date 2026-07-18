@@ -40,8 +40,6 @@ const menu = (config.header?.menu ?? [])
       link: localizedPath(item.link, lang)
     }
   })
-const maxVisibleMenuItems = 5
-
 const homeHref = localizedPath('/', lang)
 const searchHref = localizedPath('/search', lang)
 ---
@@ -76,11 +74,7 @@ const searchHref = localizedPath('/search', lang)
             ))
           }
         </div>
-        <div
-          class='nav-carousel hidden items-center gap-x-1 sm:flex'
-          data-nav-carousel
-          data-max-visible={maxVisibleMenuItems}
-        >
+        <div class='nav-carousel hidden items-center gap-x-1 sm:flex' data-nav-carousel>
           <button
             class='nav-slide-button'
             type='button'
@@ -94,10 +88,7 @@ const searchHref = localizedPath('/search', lang)
               menu.map((item, index) => (
                 <a
                   href={item.link}
-                  class:list={[
-                    'nav-slide-item flex-none py-2 text-right font-medium transition-none hover:text-primary',
-                    index >= maxVisibleMenuItems && 'hidden'
-                  ]}
+                  class='nav-slide-item flex-none py-2 text-right font-medium transition-none hover:text-primary'
                   aria-label='Nav menu item'
                   data-nav-item
                   data-nav-index={index}
@@ -180,8 +171,7 @@ const searchHref = localizedPath('/search', lang)
     private navItems: HTMLElement[] = []
     private navPrevBtn: HTMLButtonElement | null = null
     private navNextBtn: HTMLButtonElement | null = null
-    private navMaxVisible = 5
-    private navWindowSize = 5
+    private navWindowSize = 1
     private navAnimationTimer: number | null = null
     private resizeObserver: ResizeObserver | null = null
 
@@ -266,7 +256,7 @@ const searchHref = localizedPath('/search', lang)
       const reserved =
         (brand?.getBoundingClientRect().width ?? 0) + (actions?.getBoundingClientRect().width ?? 0)
       const available = Math.max(80, headerRect.width - reserved - prevWidth - nextWidth - 56)
-      const maxVisible = Math.min(this.navMaxVisible, this.navItems.length)
+      const maxVisible = this.navItems.length
 
       let count = 0
       let used = 0
@@ -391,8 +381,7 @@ const searchHref = localizedPath('/search', lang)
       this.navItems = Array.from(this.querySelectorAll('[data-nav-item]')) as HTMLElement[]
       this.navPrevBtn = this.querySelector('[data-nav-prev]')
       this.navNextBtn = this.querySelector('[data-nav-next]')
-      this.navMaxVisible = Number(carousel?.dataset.maxVisible ?? 5)
-      this.navWindowSize = this.navMaxVisible
+      this.navWindowSize = this.navItems.length
       this.navIndex = this.getStoredNavIndex() ?? this.getCurrentNavIndex()
       this.updateNavCarousel()
       if (!this.currentPageIsVisible()) {
