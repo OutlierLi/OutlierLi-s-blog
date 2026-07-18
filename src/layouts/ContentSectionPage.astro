@@ -1,0 +1,65 @@
+---
+import Header from "@components/Header.astro";
+import Footer from "@components/Footer.astro";
+import Layout from "@layouts/Layout.astro";
+import Main from "@layouts/Main.astro";
+import Card from "@components/Card";
+import getAllPosts from "@utils/getAllPosts";
+import getSortedPosts from "@utils/getSortedPosts";
+import getPostsForSection from "@utils/getPostsForSection";
+import {
+  getContentSection,
+  type ContentSectionKey,
+} from "../data/contentSections";
+import { SITE } from "@config";
+
+export interface Props {
+  section: ContentSectionKey;
+}
+
+const { section: sectionKey } = Astro.props;
+const section = getContentSection(sectionKey);
+
+if (!section) {
+  throw new Error(`Unknown content section: ${sectionKey}`);
+}
+
+const posts = await getAllPosts(({ data }) => !data.draft);
+const sectionPosts = getSortedPosts(getPostsForSection(posts, sectionKey));
+---
+
+<Layout
+  title={`${section.title} | ${SITE.title}`}
+  description={section.description}
+>
+  <Header activeNav={section.key} />
+  <Main pageTitle={section.title} pageDesc={section.description}>
+    {
+      sectionPosts.length > 0 ? (
+        <ul>
+          {sectionPosts.map(({ data, slug }) => (
+            <Card href={`/posts/${slug}/`} frontmatter={data} />
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state">
+          <p>{section.empty}</p>
+          <span>Tag: {section.key}</span>
+        </div>
+      )
+    }
+  </Main>
+  <Footer />
+</Layout>
+
+<style>
+  .empty-state {
+    @apply my-10 border-l-4 border-skin-accent py-2 pl-4;
+  }
+  .empty-state p {
+    @apply my-0 not-italic;
+  }
+  .empty-state span {
+    @apply mt-2 block text-sm opacity-70;
+  }
+</style>

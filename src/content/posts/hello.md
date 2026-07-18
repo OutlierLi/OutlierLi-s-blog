@@ -6,7 +6,8 @@ slug: hello-outerli-blog
 featured: true
 draft: false
 tags:
-  - initialization
+  - tech
+  - site
 description: The first initialization post for OuterLi Blog.
 ---
 

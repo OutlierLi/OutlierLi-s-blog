@@ -2,9 +2,13 @@
 import { LOGO_IMAGE, SITE } from "@config";
 import Hr from "./Hr.astro";
 import LinkButton from "./LinkButton.astro";
+import {
+  CONTENT_SECTIONS,
+  type ContentSectionKey,
+} from "../data/contentSections";
 
 export interface Props {
-  activeNav?: "posts" | "tags" | "about" | "search";
+  activeNav?: ContentSectionKey | "about" | "search";
 }
 
 const { activeNav } = Astro.props;
@@ -55,19 +59,21 @@ const { activeNav } = Astro.props;
           </svg>
         </button>
         <ul id="menu-items" class="display-none sm:flex">
-          <li>
-            <a href="/posts/" class={activeNav === "posts" ? "active" : ""}>
-              Posts
-            </a>
-          </li>
-          <li>
-            <a href="/tags/" class={activeNav === "tags" ? "active" : ""}>
-              Tags
-            </a>
-          </li>
+          {
+            CONTENT_SECTIONS.map(section => (
+              <li>
+                <a
+                  href={section.href}
+                  class={activeNav === section.key ? "active" : ""}
+                >
+                  {section.title}
+                </a>
+              </li>
+            ))
+          }
           <li>
             <a href="/about/" class={activeNav === "about" ? "active" : ""}>
-              About
+              关于
             </a>
           </li>
           <li>
@@ -121,13 +127,13 @@ const { activeNav } = Astro.props;
     @apply absolute -top-full left-16 z-50 bg-skin-accent px-3 py-2 text-skin-inverted transition-all focus:top-4;
   }
   .nav-container {
-    @apply mx-auto flex max-w-3xl flex-col items-center justify-between sm:flex-row;
+    @apply mx-auto flex max-w-5xl flex-col items-center justify-between sm:flex-row;
   }
   .top-nav-wrap {
     @apply relative flex w-full items-start justify-between p-4 sm:items-center sm:py-8;
   }
   .logo {
-    @apply absolute py-1 text-xl font-semibold sm:static sm:text-2xl;
+    @apply absolute py-1 text-xl font-semibold sm:static;
   }
   .hamburger-menu {
     @apply self-end p-2 sm:hidden;
@@ -140,13 +146,13 @@ const { activeNav } = Astro.props;
     @apply flex w-full flex-col items-center sm:ml-2 sm:flex-row sm:justify-end sm:space-x-4 sm:py-0;
   }
   nav ul {
-    @apply mt-4 grid w-44 grid-cols-2 grid-rows-4 gap-x-2 gap-y-2 sm:ml-0 sm:mt-0 sm:w-auto sm:gap-x-5 sm:gap-y-0;
+    @apply mt-4 grid w-64 grid-cols-2 grid-rows-4 gap-x-2 gap-y-2 sm:ml-0 sm:mt-0 sm:w-auto sm:gap-x-3 sm:gap-y-0;
   }
   nav ul li {
     @apply col-span-2 flex items-center justify-center;
   }
   nav ul li a {
-    @apply w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-2 sm:py-1;
+    @apply w-full px-4 py-3 text-center font-medium hover:text-skin-accent sm:my-0 sm:px-1 sm:py-1;
   }
   nav ul li:nth-last-child(2) a {
     @apply w-auto;
