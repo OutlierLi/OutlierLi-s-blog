@@ -3,9 +3,9 @@ import type { Config, IntegrationUserConfig, ThemeUserConfig } from 'astro-pure/
 export const theme: ThemeUserConfig = {
   // === Basic configuration ===
   /** Title for your website. Will be used in metadata and as browser tab title. */
-  title: 'Joye Personal Blog',
+  title: 'OutlierLi',
   /** Will be used in index page & copyright declaration */
-  author: 'Joye',
+  author: 'OutlierLi',
   /** Description metadata for your website. Can be used in page metadata. */
   description: 'Stay hungry, stay foolish',
   /** The default favicon for your site which should be a path to an image in the `public/` directory. */
@@ -64,8 +64,8 @@ export const theme: ThemeUserConfig = {
     credits: true,
     /** Optional details about the social media accounts for this site. */
     social: {
-      github: 'https://github.com/joyehuang'
-      // linkedin: 'https://www.linkedin.com/in/joyehuang/'
+      github: 'https://github.com/OutlierLi'
+      // linkedin: ''
     }
   },
 
@@ -118,8 +118,8 @@ export const integ: IntegrationUserConfig = {
     applyTip: [
       { name: 'Name', val: theme.title },
       { name: 'Desc', val: theme.description || 'Null' },
-      { name: 'Link', val: 'https://joyehuang.me/' },
-      { name: 'Avatar', val: 'https://joyehuang.me/favicon/favicon.ico' }
+      { name: 'Link', val: 'https://outlierli-s-blog.pages.dev/' },
+      { name: 'Avatar', val: 'https://avatars.githubusercontent.com/u/71912744?v=4' }
     ]
   },
   // Page search runs on /api/search.json (see SiteSearch.astro); pagefind build hook disabled
@@ -149,11 +149,11 @@ export const integ: IntegrationUserConfig = {
     }
   },
   waline: {
-    enable: true,
-    server: 'https://waline.joyehuang.me',
+    enable: false,
+    server: '',
     additionalConfigs: {
-      pageview: true,
-      comment: true
+      pageview: false,
+      comment: false
     }
   }
 }

@@ -53,7 +53,7 @@ const openSourceRepos = [
 
 async function fetchStars(repo: string, fallback: number) {
   try {
-    const res = await fetch(`https://api.github.com/repos/joyehuang/${repo}`, {
+    const res = await fetch(`https://api.github.com/repos/OutlierLi/${repo}`, {
       headers: { Accept: 'application/vnd.github+json' }
     })
     if (!res.ok) return fallback
@@ -117,7 +117,7 @@ const agentHackathonLink =
           <Label
             title='GitHub'
             as='a'
-            href='https://github.com/joyehuang'
+            href='https://github.com/OutlierLi'
             target='_blank'
             data-analytics-event='github_link_click'
             data-analytics-surface='home_profile'
@@ -179,7 +179,7 @@ const agentHackathonLink =
             >
               第一届
             </span>
-            <span class='text-muted-foreground'>Joye 粉丝 Agent 比赛 · 比赛进行中</span>
+            <span class='text-muted-foreground'>OutlierLi 粉丝 Agent 比赛 · 比赛进行中</span>
           </div>
           <h3 class='soa-title mt-1.5 text-2xl font-bold sm:text-3xl'>Summer of Agents</h3>
           <p class='mt-1.5 text-sm leading-relaxed text-muted-foreground'>
@@ -357,7 +357,7 @@ const agentHackathonLink =
               heading={repo.name}
               subheading={repo.description}
               date={`⭐ ${repo.stars}`}
-              href={`https://github.com/joyehuang/${repo.name}`}
+              href={`https://github.com/OutlierLi/${repo.name}`}
               data-analytics-event='github_link_click'
               data-analytics-surface='home_open_source'
               data-analytics-target='repo'
@@ -398,7 +398,7 @@ const agentHackathonLink =
   <aside
     id='agent-popout'
     class='agent-popout fixed bottom-4 start-4 z-50 w-[calc(100vw-2rem)] max-w-sm md:bottom-6 md:start-6 md:max-w-xs'
-    aria-label='第一届 Joye 粉丝 Agent 比赛'
+    aria-label='第一届 OutlierLi 粉丝 Agent 比赛'
   >
     <div
       data-agent-popout-panel
@@ -446,7 +446,7 @@ const agentHackathonLink =
             <span class='rounded-full border bg-muted px-2 py-0.5 text-xs text-muted-foreground'>
               第一届
             </span>
-            <span class='text-xs text-muted-foreground'>Joye 粉丝 Agent 比赛</span>
+            <span class='text-xs text-muted-foreground'>OutlierLi 粉丝 Agent 比赛</span>
           </div>
           <h2 class='text-base font-semibold leading-tight'>Summer of Agents</h2>
           <p

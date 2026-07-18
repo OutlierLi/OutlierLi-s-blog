@@ -93,7 +93,7 @@ function buildPostDir(p: FsCollectionEntry, hrefRoot: string): DirNode {
   const lang = p.data.language ?? inferLang(p)
   const href = hrefFor(p, hrefRoot)
   const endpoint = `/api/knowledge/content/${p.kind}/${encodeURI(p.id)}`
-  const canonicalUrl = `https://joyehuang.me${href}`
+  const canonicalUrl = `https://outlierli-s-blog.pages.dev${href}`
   const metaContent = formatMeta({
     title: p.data.title,
     date,

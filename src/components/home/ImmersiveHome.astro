@@ -91,7 +91,7 @@ const copy = isEn
       ready: 'See if we fit',
       talk: 'Ask for my résumé',
       replay: 'Replay entrance',
-      copyright: 'Designed and engineered by Joye.'
+      copyright: 'Designed and engineered by OutlierLi.'
     }
   : {
       work: '作品',
@@ -131,7 +131,7 @@ const copy = isEn
       ready: '看看我们是否匹配',
       talk: '索取简历 / 联系我',
       replay: '重播入场',
-      copyright: 'Joye 设计与开发。'
+      copyright: 'OutlierLi 设计与开发。'
     }
 
 const projects: ProductItem[] = isEn
@@ -342,7 +342,7 @@ const totalStars = repos.reduce((sum, repo) => sum + repo.stars, 0)
 
 <visual-home class='visual-home' data-locale={locale}>
   <nav class='home-nav' aria-label={isEn ? 'Primary navigation' : '主导航'}>
-    <a class='home-nav__brand' href={isEn ? '/en/v2' : '/v2'}>Joye Huang / V2</a>
+    <a class='home-nav__brand' href={isEn ? '/en/v2' : '/v2'}>OutlierLi / V2</a>
     <div class='home-nav__links'>
       <a href='#work'>{copy.work}</a>
       <a href='#evidence'>{copy.about}</a>
@@ -375,7 +375,7 @@ const totalStars = repos.reduce((sum, repo) => sum + repo.stars, 0)
     <section class='hero' id='top' data-hero>
       <div class='hero__copy'>
         <div class='hero__eyebrow'><span>{copy.role}</span><span>{copy.location}</span></div>
-        <h1>Joye<br />Huang</h1>
+        <h1>OutlierLi<br />Huang</h1>
         <p>{copy.intro}</p>
         <a href='#work'><i></i>{copy.explore}</a>
       </div>
@@ -433,7 +433,7 @@ const totalStars = repos.reduce((sum, repo) => sum + repo.stars, 0)
       <div class='hero__portrait'>
         <Image
           src={avatar}
-          alt={isEn ? 'Portrait of Joye' : 'Joye 的头像'}
+          alt={isEn ? 'Portrait of OutlierLi' : 'OutlierLi 的头像'}
           data-intro-target='avatar'
         />
       </div>
@@ -652,7 +652,7 @@ const totalStars = repos.reduce((sum, repo) => sum + repo.stars, 0)
           repos.slice(0, 3).map((repo, index) => (
             <a
               class='repo-card'
-              href={repo.href ?? `https://github.com/joyehuang/${repo.name}`}
+              href={repo.href ?? `https://github.com/OutlierLi/${repo.name}`}
               target='_blank'
               rel='noopener noreferrer'
             >

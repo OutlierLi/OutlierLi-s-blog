@@ -98,7 +98,7 @@ const copy =
   ;(() => {
     const overlay = document.getElementById('intro-overlay')
     if (!overlay) return
-    const isPublicSite = /^(?:www\.)?joyehuang\.me$/i.test(location.hostname)
+    const isPublicSite = /^outlierli-s-blog\.pages\.dev$/i.test(location.hostname)
     if (isPublicSite) {
       overlay.classList.add('intro-idle')
       overlay.classList.remove('intro-pending')

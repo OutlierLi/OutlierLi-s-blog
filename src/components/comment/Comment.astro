@@ -30,7 +30,7 @@ const { class: className, path } = Astro.props as Props
 
   const walineConfig = config.integ.waline
 
-  class JoyeComment extends HTMLElement {
+  class OutlierLiComment extends HTMLElement {
     constructor() {
       super()
     }
@@ -73,7 +73,7 @@ const { class: className, path } = Astro.props as Props
   }
 
   if (walineConfig.enable && !customElements.get('joye-comment')) {
-    customElements.define('joye-comment', JoyeComment)
+    customElements.define('joye-comment', OutlierLiComment)
   }
 </script>
 

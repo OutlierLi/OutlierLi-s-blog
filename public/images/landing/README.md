@@ -1,6 +1,6 @@
 # Landing page media
 
-Verified public product media used in Joye's portfolio.
+Verified public product media used in OutlierLi's portfolio.
 
 - `playyy-ui.png`: public homepage capture from <https://playyy.ai/>.
 - `atypica-site.png`: viewport capture of <https://atypica.ai/> showing its public research-agent interface.

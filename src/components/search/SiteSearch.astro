@@ -28,7 +28,7 @@
     excerpt: string
   }
 
-  class JoyeSiteSearch extends HTMLElement {
+  class OutlierLiSiteSearch extends HTMLElement {
     connectedCallback() {
       if (this.dataset.ready === 'true') return
       this.dataset.ready = 'true'
@@ -109,7 +109,7 @@
   }
 
   if (!customElements.get('joye-site-search')) {
-    customElements.define('joye-site-search', JoyeSiteSearch)
+    customElements.define('joye-site-search', OutlierLiSiteSearch)
   }
 </script>
 

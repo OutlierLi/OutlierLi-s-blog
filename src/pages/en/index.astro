@@ -59,7 +59,7 @@ const openSourceRepos = [
 
 async function fetchStars(repo: string, fallback: number) {
   try {
-    const res = await fetch(`https://api.github.com/repos/joyehuang/${repo}`, {
+    const res = await fetch(`https://api.github.com/repos/OutlierLi/${repo}`, {
       headers: { Accept: 'application/vnd.github+json' }
     })
     if (!res.ok) return fallback
@@ -116,7 +116,7 @@ const latestNotes = (await getCollection('notesEn'))
           <Label
             title='GitHub'
             as='a'
-            href='https://github.com/joyehuang'
+            href='https://github.com/OutlierLi'
             target='_blank'
             data-analytics-event='github_link_click'
             data-analytics-surface='home_profile'
@@ -295,7 +295,7 @@ const latestNotes = (await getCollection('notesEn'))
               heading={repo.name}
               subheading={repo.description}
               date={`⭐ ${repo.stars}`}
-              href={`https://github.com/joyehuang/${repo.name}`}
+              href={`https://github.com/OutlierLi/${repo.name}`}
               data-analytics-event='github_link_click'
               data-analytics-surface='home_open_source'
               data-analytics-target='repo'

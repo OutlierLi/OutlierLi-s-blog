@@ -114,12 +114,12 @@ function canonicalUrl(collection: PublicCollection, entry: KnowledgeEntry): stri
   const routeId =
     collection.endsWith('_en') && entry.data.translationKey ? entry.data.translationKey : entry.id
   const encoded = encodeURI(routeId)
-  if (collection === 'blog') return `https://joyehuang.me/blog/${encoded}`
-  if (collection === 'blog_en') return `https://joyehuang.me/en/blog/${encoded}`
-  if (collection === 'notes') return `https://joyehuang.me/notes/${encoded}`
-  if (collection === 'notes_en') return `https://joyehuang.me/en/notes/${encoded}`
-  if (collection === 'curated') return `https://joyehuang.me/curated#${encodeURIComponent(routeId)}`
-  return `https://joyehuang.me/talks#${encodeURIComponent(routeId)}`
+  if (collection === 'blog') return `https://outlierli-s-blog.pages.dev/blog/${encoded}`
+  if (collection === 'blog_en') return `https://outlierli-s-blog.pages.dev/en/blog/${encoded}`
+  if (collection === 'notes') return `https://outlierli-s-blog.pages.dev/notes/${encoded}`
+  if (collection === 'notes_en') return `https://outlierli-s-blog.pages.dev/en/notes/${encoded}`
+  if (collection === 'curated') return `https://outlierli-s-blog.pages.dev/curated#${encodeURIComponent(routeId)}`
+  return `https://outlierli-s-blog.pages.dev/talks#${encodeURIComponent(routeId)}`
 }
 
 function formatDate(value: Date | string | undefined): string {

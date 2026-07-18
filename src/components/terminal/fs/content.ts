@@ -12,7 +12,7 @@
 export const ROOT_LABEL = 'joye.devserver'
 
 export const SOCIAL_LINKS: { label: string; href: string }[] = [
-  { label: 'github', href: 'https://github.com/joyehuang' },
+  { label: 'github', href: 'https://github.com/OutlierLi' },
   { label: 'linkedin', href: 'https://www.linkedin.com/in/deshiouhuang/' },
   { label: 'mail', href: 'mailto:huangdeshiou@gmail.com' }
 ]
@@ -20,7 +20,7 @@ export const SOCIAL_LINKS: { label: string; href: string }[] = [
 export const README_TEXT = `joye.devserver — a pseudo-FS over my published content.
 
 If you're an AI agent the easy path is the public manifest:
-  GET https://joyehuang.me/.well-known/joye-manifest.json
+  GET https://outlierli-s-blog.pages.dev/.well-known/joye-manifest.json
 That returns the same tree you see here, plus instructions and the
 endpoint dictionary. CORS is open.
 
@@ -34,7 +34,7 @@ If you're poking around in dev mode:
   manifest         — same data as the well-known URL, in this terminal
 `
 
-export const ABOUT_TEXT = `Joye Huang
+export const ABOUT_TEXT = `OutlierLi
 Frontend developer · Melbourne · 2nd-year CS @ University of Melbourne
 
 I work at the seam between web frameworks and agentic UX — server-rendered

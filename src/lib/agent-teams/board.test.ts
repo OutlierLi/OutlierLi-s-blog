@@ -11,7 +11,7 @@ import {
 const team = {
   title: '游戏 Agent（杀戮尖塔 2）',
   tags: ['game', 'planning'],
-  members: [{ name: 'Joye' }, { name: '摸鱼选手' }]
+  members: [{ name: 'OutlierLi' }, { name: '摸鱼选手' }]
 }
 
 describe('队伍搜索', () => {
@@ -43,9 +43,9 @@ describe('响应式分页', () => {
 
 describe('GitHub 仓库链接', () => {
   test('归一化仓库首页链接', () => {
-    expect(normalizeGithubRepoUrl('https://www.github.com/joyehuang/blog.git?tab=readme')).toEqual({
+    expect(normalizeGithubRepoUrl('https://www.github.com/OutlierLi/blog.git?tab=readme')).toEqual({
       ok: true,
-      value: 'https://github.com/joyehuang/blog'
+      value: 'https://github.com/OutlierLi/blog'
     })
   })
 

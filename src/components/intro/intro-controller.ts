@@ -83,7 +83,7 @@ function trackIntro(
 }
 
 function initIntro() {
-  if (/^(?:www\.)?joyehuang\.me$/i.test(location.hostname)) return
+  if (/^outlierli-s-blog\.pages\.dev$/i.test(location.hostname)) return
 
   const overlayQuery = document.getElementById('intro-overlay')
   const skipButtonQuery = document.getElementById('intro-skip') as HTMLButtonElement | null

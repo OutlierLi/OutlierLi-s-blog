@@ -14,7 +14,7 @@ type SearchApiResult = {
 
 const MOCK_AGENT_REPLIES: Record<string, string[]> = {
   default: [
-    'Hey, this is Joye (well, a tiny mock of him).',
+    'Hey, this is OutlierLi (well, a tiny mock of him).',
     'Real agent endpoint is wiring up — for now I just rehearse lines.',
     'Try `chat what are you building?` or `chat hire you?` for canned answers.'
   ],
@@ -95,14 +95,14 @@ export const commands: CommandRegistry = {
 
   whoami: {
     name: 'whoami',
-    summary: 'about Joye',
+    summary: 'about OutlierLi',
     run: ({ push }) => {
       push([
         {
           kind: 'node',
           node: (
             <span>
-              <span className='wt-tone-primary'>Joye</span>
+              <span className='wt-tone-primary'>OutlierLi</span>
               <span className='wt-tone-muted'> · Frontend developer based in Melbourne</span>
             </span>
           )

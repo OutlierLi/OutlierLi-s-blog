@@ -22,7 +22,7 @@ export type AgentTeam = {
 export const activity = {
   /** 比赛的英文名 / 品牌名 */
   name: 'Summer of Agents',
-  title: '第一届 Joye 粉丝 Agent 比赛',
+  title: '第一届 OutlierLi 粉丝 Agent 比赛',
   subtitle: '比赛进行中',
   tagline: '组队已经截止啦，现在各队都在开发中。围观、追进度、找灵感都欢迎，对 Agent 感兴趣就来看看 🤖',
   /** 组队截止日（YYYY-MM-DD，测试会校验格式） */
