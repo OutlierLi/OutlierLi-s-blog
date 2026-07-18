@@ -1,10 +1,13 @@
 import { getCollection } from "astro:content";
 import type { PostEntry } from "../types";
 
-const postContentModules = import.meta.glob("../content/posts/**/*.{md,mdx}");
+const contentModules = {
+  blog: import.meta.glob("../content/blog/**/*.{md,mdx}"),
+  posts: import.meta.glob("../content/posts/**/*.{md,mdx}"),
+};
 
 const getPostCollection = async (collection: "blog" | "posts") => {
-  if (collection === "posts" && Object.keys(postContentModules).length === 0) {
+  if (Object.keys(contentModules[collection]).length === 0) {
     return [];
   }
 

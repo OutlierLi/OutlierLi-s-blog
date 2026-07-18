@@ -3,6 +3,7 @@ import Hr from "./Hr.astro";
 import Socials from "./Socials.astro";
 
 const currentYear = new Date().getFullYear();
+const buildTimestamp = new Date().toISOString();
 
 export interface Props {
   noMarginTop?: boolean;
@@ -20,6 +21,7 @@ const { noMarginTop = false } = Astro.props;
       <span class="separator">&nbsp;|&nbsp;</span>
       <span>All rights reserved.</span>
     </div>
+    <div class="timestamp">Build timestamp: {buildTimestamp}</div>
   </div>
 </footer>
 
@@ -38,6 +40,9 @@ const { noMarginTop = false } = Astro.props;
   }
   .copyright-wrapper {
     @apply my-2 flex flex-col items-center whitespace-nowrap sm:flex-row;
+  }
+  .timestamp {
+    @apply text-sm opacity-75;
   }
   .separator {
     @apply hidden sm:inline;
