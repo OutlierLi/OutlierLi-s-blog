@@ -1,0 +1,72 @@
+---
+type TaggablePost = {
+  data: {
+    tags?: string[]
+  }
+}
+
+interface Props {
+  posts: TaggablePost[]
+  basePath?: string
+}
+
+const { posts, basePath = '/tags' } = Astro.props
+
+const tagCounts = new Map<string, number>()
+
+for (const post of posts) {
+  for (const rawTag of post.data.tags ?? []) {
+    const tag = rawTag.trim()
+    if (!tag) continue
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)
+  }
+}
+
+const tags = [...tagCounts.entries()]
+  .map(([name, count]) => ({ name, count }))
+  .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+
+const maxCount = Math.max(...tags.map((tag) => tag.count), 1)
+const minCount = Math.min(...tags.map((tag) => tag.count), maxCount)
+
+function tagStyle(count: number) {
+  const ratio = maxCount === minCount ? 0.45 : (count - minCount) / (maxCount - minCount)
+  const size = 0.78 + ratio * 0.28
+  const weight = Math.round(450 + ratio * 180)
+
+  return `--tag-size:${size.toFixed(2)}rem;--tag-weight:${weight}`
+}
+---
+
+{
+  tags.length > 0 && (
+    <div class='tag-cloud flex flex-wrap items-center gap-2'>
+      {tags.map((tag) => (
+        <a
+          class='tag-cloud-item rounded-lg border bg-muted px-2.5 py-1 text-muted-foreground no-underline transition-colors hover:bg-primary-foreground hover:text-primary'
+          href={`${basePath}/${encodeURIComponent(tag.name)}`}
+          style={tagStyle(tag.count)}
+          title={`${tag.name} (${tag.count})`}
+          data-astro-prefetch
+        >
+          <span>{tag.name}</span>
+          <span class='tag-cloud-count'>{tag.count}</span>
+        </a>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .tag-cloud-item {
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: var(--tag-size);
+    font-weight: var(--tag-weight);
+  }
+
+  .tag-cloud-count {
+    margin-left: 0.32rem;
+    font-size: 0.72em;
+    opacity: 0.72;
+  }
+</style>

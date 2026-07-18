@@ -25,6 +25,7 @@ const menuKeyMap: Record<string, Parameters<typeof t>[0]> = {
   '/movies': 'nav.movies',
   '/photography': 'nav.photography',
   '/projects': 'nav.projects',
+  '/investment': 'nav.investment',
   '/about': 'nav.about',
   '/contact': 'nav.contact'
 }
@@ -39,6 +40,7 @@ const menu = (config.header?.menu ?? [])
       link: localizedPath(item.link, lang)
     }
   })
+const maxVisibleMenuItems = 5
 
 const homeHref = localizedPath('/', lang)
 const searchHref = localizedPath('/search', lang)
@@ -54,24 +56,66 @@ const searchHref = localizedPath('/search', lang)
     aria-label='Brand'>{config.title}</a
   >
 
-  <div class='flex items-center gap-x-2'>
+  <div class='header-right flex min-w-0 items-center gap-x-2'>
     {/* Menu links */}
     <div
       id='headerExpandContent'
       class='end-0 start-0 top-12 grid border border-transparent group-[.not-top]:rounded-xl group-[.expanded]:opacity-100 dark:group-[.expanded.not-top]:bg-muted max-sm:absolute max-sm:opacity-0 max-sm:group-[.not-top]:border-border max-sm:group-[.expanded.not-top]:bg-background max-sm:group-[.not-top]:px-4 max-sm:group-[.not-top]:py-2 sm:grid-rows-1'
     >
       <div class='flex flex-col items-center justify-center overflow-hidden sm:flex-row'>
-        {
-          menu.map((item) => (
-            <a
-              href={item.link}
-              class='w-full flex-none grow py-2 text-right font-medium transition-none hover:text-primary sm:w-fit sm:px-3'
-              aria-label='Nav menu item'
-            >
-              {item.title}
-            </a>
-          ))
-        }
+        <div class='flex w-full flex-col items-center sm:hidden'>
+          {
+            menu.map((item) => (
+              <a
+                href={item.link}
+                class='w-full flex-none grow py-2 text-right font-medium transition-none hover:text-primary'
+                aria-label='Nav menu item'
+              >
+                {item.title}
+              </a>
+            ))
+          }
+        </div>
+        <div
+          class='nav-carousel hidden items-center gap-x-1 sm:flex'
+          data-nav-carousel
+          data-max-visible={maxVisibleMenuItems}
+        >
+          <button
+            class='nav-slide-button'
+            type='button'
+            aria-label='Previous navigation item'
+            data-nav-prev
+          >
+            &lt;
+          </button>
+          <div class='nav-slide-window flex items-center'>
+            {
+              menu.map((item, index) => (
+                <a
+                  href={item.link}
+                  class:list={[
+                    'nav-slide-item flex-none py-2 text-right font-medium transition-none hover:text-primary',
+                    index >= maxVisibleMenuItems && 'hidden'
+                  ]}
+                  aria-label='Nav menu item'
+                  data-nav-item
+                  data-nav-index={index}
+                >
+                  {item.title}
+                </a>
+              ))
+            }
+          </div>
+          <button
+            class='nav-slide-button'
+            type='button'
+            aria-label='Next navigation item'
+            data-nav-next
+          >
+            &gt;
+          </button>
+        </div>
         <div class='flex w-full grow flex-row justify-end gap-x-3 sm:w-fit sm:gap-x-5'>
           <a class='px-1 py-2 transition-none sm:px-2' href={searchHref} title={t('nav.search')}>
             <span class='sr-only'>{t('nav.search')}</span>
@@ -82,7 +126,10 @@ const searchHref = localizedPath('/search', lang)
     </div>
 
     {/* buttons */}
-    <div class='z-30 flex gap-x-4 group-[.not-top]:gap-x-2' style='transition:gap 0.3s'>
+    <div
+      class='header-actions z-30 flex gap-x-4 group-[.not-top]:gap-x-2'
+      style='transition:gap 0.3s'
+    >
       <LanguageSwitcher lang={lang} />
       <button
         id='toggleDevMode'
@@ -127,7 +174,16 @@ const searchHref = localizedPath('/search', lang)
   import { setTheme, showToast } from 'astro-pure/utils'
 
   class Header extends HTMLElement {
+    private readonly navStorageKey = 'outlierli:header-nav-index'
     private toggleMenuBtn: HTMLElement | null = null
+    private navIndex = 0
+    private navItems: HTMLElement[] = []
+    private navPrevBtn: HTMLButtonElement | null = null
+    private navNextBtn: HTMLButtonElement | null = null
+    private navMaxVisible = 5
+    private navWindowSize = 5
+    private navAnimationTimer: number | null = null
+    private resizeObserver: ResizeObserver | null = null
 
     constructor() {
       super()
@@ -136,6 +192,151 @@ const searchHref = localizedPath('/search', lang)
     private setMenuExpanded(expanded: boolean) {
       this.classList.toggle('expanded', expanded)
       this.toggleMenuBtn?.setAttribute('aria-expanded', expanded.toString())
+    }
+
+    private getStoredNavIndex() {
+      const raw = window.localStorage.getItem(this.navStorageKey)
+      if (raw === null) return null
+      const value = Number(raw)
+      return Number.isFinite(value) ? value : null
+    }
+
+    private storeNavIndex() {
+      window.localStorage.setItem(this.navStorageKey, String(this.navIndex))
+    }
+
+    private normalizePath(path: string) {
+      const pathname = new URL(path, window.location.origin).pathname.replace(/\/$/, '') || '/'
+      if (pathname === '/en') return '/'
+      return pathname.replace(/^\/en(?=\/)/, '') || '/'
+    }
+
+    private getActiveNavIndex() {
+      const currentPath = this.normalizePath(window.location.pathname)
+      return this.navItems.findIndex((item) => {
+        const href = item.getAttribute('href')
+        return href ? this.normalizePath(href) === currentPath : false
+      })
+    }
+
+    private getCurrentNavIndex() {
+      const activeIndex = this.getActiveNavIndex()
+      if (activeIndex < 0) return 0
+      return Math.max(0, activeIndex - this.navWindowSize + 1)
+    }
+
+    private currentPageIsVisible() {
+      const activeIndex = this.getActiveNavIndex()
+      if (activeIndex < 0) return true
+      return activeIndex >= this.navIndex && activeIndex < this.navIndex + this.navWindowSize
+    }
+
+    private measureNavItemWidths() {
+      if (this.navItems.length === 0) return []
+
+      const measurer = document.createElement('div')
+      measurer.style.position = 'absolute'
+      measurer.style.visibility = 'hidden'
+      measurer.style.pointerEvents = 'none'
+      measurer.style.insetInlineStart = '-9999px'
+      measurer.style.insetBlockStart = '0'
+      measurer.style.display = 'flex'
+      document.body.append(measurer)
+
+      const clones = this.navItems.map((item) => {
+        const clone = item.cloneNode(true) as HTMLElement
+        clone.classList.remove('hidden')
+        clone.style.display = 'block'
+        measurer.append(clone)
+        return clone
+      })
+      const widths = clones.map((clone) => clone.getBoundingClientRect().width)
+      measurer.remove()
+      return widths
+    }
+
+    private calculateNavWindowSize() {
+      const headerRect = this.getBoundingClientRect()
+      const brand = this.querySelector('[aria-label="Brand"]') as HTMLElement | null
+      const actions = this.querySelector('.header-actions') as HTMLElement | null
+      const prevWidth = this.navPrevBtn?.getBoundingClientRect().width ?? 0
+      const nextWidth = this.navNextBtn?.getBoundingClientRect().width ?? 0
+      const itemWidths = this.measureNavItemWidths()
+
+      const reserved =
+        (brand?.getBoundingClientRect().width ?? 0) + (actions?.getBoundingClientRect().width ?? 0)
+      const available = Math.max(80, headerRect.width - reserved - prevWidth - nextWidth - 56)
+      const maxVisible = Math.min(this.navMaxVisible, this.navItems.length)
+
+      let count = 0
+      let used = 0
+      for (
+        let index = this.navIndex;
+        index < this.navItems.length && count < maxVisible;
+        index += 1
+      ) {
+        const width = itemWidths[index] ?? 0
+        if (count > 0 && used + width > available) break
+        used += width
+        count += 1
+      }
+
+      return Math.max(1, count)
+    }
+
+    private updateNavCarousel() {
+      this.navWindowSize = this.calculateNavWindowSize()
+      const maxIndex = Math.max(0, this.navItems.length - this.navWindowSize)
+      this.navIndex = Math.max(0, Math.min(this.navIndex, maxIndex))
+
+      this.navItems.forEach((item, index) => {
+        const hidden = index < this.navIndex || index >= this.navIndex + this.navWindowSize
+        item.classList.toggle('hidden', hidden)
+        item.setAttribute('aria-hidden', hidden.toString())
+      })
+
+      if (this.navPrevBtn) {
+        this.navPrevBtn.disabled = this.navIndex === 0
+        this.navPrevBtn.setAttribute('aria-disabled', (this.navIndex === 0).toString())
+      }
+      if (this.navNextBtn) {
+        this.navNextBtn.disabled = this.navIndex === maxIndex
+        this.navNextBtn.setAttribute('aria-disabled', (this.navIndex === maxIndex).toString())
+      }
+    }
+
+    private slideNav(delta: number) {
+      const maxIndex = Math.max(0, this.navItems.length - this.navWindowSize)
+      const nextIndex = Math.max(0, Math.min(this.navIndex + delta, maxIndex))
+      if (nextIndex === this.navIndex) return
+
+      const carousel = this.querySelector('[data-nav-carousel]') as HTMLElement | null
+      if (!carousel || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        this.navIndex = nextIndex
+        this.updateNavCarousel()
+        this.storeNavIndex()
+        return
+      }
+
+      if (this.navAnimationTimer !== null) {
+        window.clearTimeout(this.navAnimationTimer)
+        this.navAnimationTimer = null
+      }
+
+      const direction = delta > 0 ? 'forward' : 'backward'
+      carousel.dataset.slide = `exit-${direction}`
+
+      this.navAnimationTimer = window.setTimeout(() => {
+        this.navIndex = nextIndex
+        this.updateNavCarousel()
+        this.storeNavIndex()
+
+        carousel.dataset.slide = `enter-${direction}`
+        this.navAnimationTimer = window.setTimeout(() => {
+          delete carousel.dataset.slide
+          this.navAnimationTimer = null
+        }, 360)
+      }, 260)
     }
 
     private handleDocumentPointerDown = (event: PointerEvent) => {
@@ -186,10 +387,38 @@ const searchHref = localizedPath('/search', lang)
         this.setMenuExpanded(!this.classList.contains('expanded'))
       })
 
+      const carousel = this.querySelector('[data-nav-carousel]') as HTMLElement | null
+      this.navItems = Array.from(this.querySelectorAll('[data-nav-item]')) as HTMLElement[]
+      this.navPrevBtn = this.querySelector('[data-nav-prev]')
+      this.navNextBtn = this.querySelector('[data-nav-next]')
+      this.navMaxVisible = Number(carousel?.dataset.maxVisible ?? 5)
+      this.navWindowSize = this.navMaxVisible
+      this.navIndex = this.getStoredNavIndex() ?? this.getCurrentNavIndex()
+      this.updateNavCarousel()
+      if (!this.currentPageIsVisible()) {
+        this.navIndex = this.getCurrentNavIndex()
+        this.updateNavCarousel()
+      }
+
+      this.navPrevBtn?.addEventListener('click', () => {
+        this.slideNav(-this.navWindowSize)
+      })
+      this.navNextBtn?.addEventListener('click', () => {
+        this.slideNav(this.navWindowSize)
+      })
+      this.navItems.forEach((item) => item.addEventListener('click', () => this.storeNavIndex()))
+
+      if (carousel && 'ResizeObserver' in window) {
+        this.resizeObserver = new ResizeObserver(() => this.updateNavCarousel())
+        this.resizeObserver.observe(this)
+      }
+
       document.addEventListener('pointerdown', this.handleDocumentPointerDown)
     }
 
     disconnectedCallback() {
+      if (this.navAnimationTimer !== null) window.clearTimeout(this.navAnimationTimer)
+      this.resizeObserver?.disconnect()
       document.removeEventListener('pointerdown', this.handleDocumentPointerDown)
     }
   }
@@ -230,6 +459,127 @@ const searchHref = localizedPath('/search', lang)
   }
   :global(.dark) header-component.not-top {
     background-color: hsl(var(--muted) / var(--un-bg-opacity));
+  }
+
+  .nav-carousel {
+    flex: 0 1 auto;
+    min-width: 0;
+  }
+
+  .nav-slide-window {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 1.15rem,
+      #000 calc(100% - 1.15rem),
+      transparent 100%
+    );
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 1.15rem,
+      #000 calc(100% - 1.15rem),
+      transparent 100%
+    );
+  }
+
+  .nav-slide-item {
+    padding-inline: 0.625rem;
+  }
+
+  [data-nav-carousel][data-slide='exit-forward'] .nav-slide-item:not(.hidden) {
+    animation: nav-exit-left 260ms ease-in forwards;
+  }
+
+  [data-nav-carousel][data-slide='enter-forward'] .nav-slide-item:not(.hidden) {
+    animation: nav-enter-right 360ms ease-out both;
+  }
+
+  [data-nav-carousel][data-slide='exit-backward'] .nav-slide-item:not(.hidden) {
+    animation: nav-exit-right 260ms ease-in forwards;
+  }
+
+  [data-nav-carousel][data-slide='enter-backward'] .nav-slide-item:not(.hidden) {
+    animation: nav-enter-left 360ms ease-out both;
+  }
+
+  @keyframes nav-exit-left {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(-1.1rem);
+    }
+  }
+
+  @keyframes nav-enter-right {
+    from {
+      opacity: 0;
+      transform: translateX(1.1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes nav-exit-right {
+    from {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    to {
+      opacity: 0;
+      transform: translateX(1.1rem);
+    }
+  }
+
+  @keyframes nav-enter-left {
+    from {
+      opacity: 0;
+      transform: translateX(-1.1rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .nav-slide-button {
+    display: inline-flex;
+    width: 1.55rem;
+    height: 1.55rem;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    color: hsl(var(--muted-foreground) / 1);
+    font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+    font-size: 0.95rem;
+    line-height: 1;
+    transition:
+      background-color 0.15s,
+      color 0.15s,
+      opacity 0.15s;
+  }
+
+  .nav-slide-button:hover:not(:disabled) {
+    background-color: hsl(var(--border) / 1);
+    color: hsl(var(--primary) / 1);
+  }
+
+  .nav-slide-button:disabled {
+    cursor: default;
+    opacity: 0.32;
+  }
+
+  header-component.not-top .nav-slide-item {
+    padding-inline: 0.5rem;
   }
 
   /* header menu */

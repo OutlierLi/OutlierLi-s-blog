@@ -15,10 +15,10 @@ export const theme: ThemeUserConfig = {
     lang: 'zh-CN',
     attrs: 'zh_CN',
     // Date locale
-    dateLocale: 'zh-CN',
+    dateLocale: 'sv-SE',
     dateOptions: {
-      day: 'numeric',
-      month: 'short',
+      day: '2-digit',
+      month: '2-digit',
       year: 'numeric'
     }
   },
@@ -52,6 +52,8 @@ export const theme: ThemeUserConfig = {
       { title: 'Books', link: '/books' },
       { title: 'Movies', link: '/movies' },
       { title: 'Photography', link: '/photography' },
+      { title: 'Projects', link: '/projects' },
+      { title: 'Investment', link: '/investment' },
       { title: 'About', link: '/about' },
       { title: 'Contact', link: '/contact' }
     ]

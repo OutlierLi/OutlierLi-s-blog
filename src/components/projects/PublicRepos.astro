@@ -1,0 +1,69 @@
+---
+interface Props {
+  username?: string
+}
+
+const { username = 'OutlierLi' } = Astro.props
+const featuredRepos = [
+  {
+    description: '信息物理系统-Rijndael加密算法的实现',
+    fullName: `${username}/--Rijndael-`,
+    href: `https://github.com/${username}/--Rijndael-`,
+    language: null,
+    title: 'Rijindael'
+  },
+  {
+    description: '字节流报文协议解析构造',
+    fullName: `${username}/wireforge`,
+    href: `https://github.com/${username}/wireforge`,
+    language: null,
+    title: 'wireforge'
+  }
+]
+---
+
+<div class='not-prose grid grid-cols-1 gap-3 sm:grid-cols-2'>
+  {
+    featuredRepos.map((repo) => (
+      <a
+        class='repo-card rounded-xl border bg-background px-4 py-3 no-underline transition-colors hover:bg-muted'
+        href={repo.href}
+        target='_blank'
+        rel='noreferrer'
+        data-analytics-event='project_link_click'
+        data-analytics-surface='projects'
+        data-analytics-section='public_repos'
+        data-analytics-project={repo.fullName}
+        data-analytics-link-type='github'
+      >
+        <div class='flex items-start justify-between gap-3'>
+          <h3 class='repo-name m-0 text-base font-semibold text-foreground'>{repo.title}</h3>
+          <span class='rounded-lg border px-2 py-0.5 text-xs text-muted-foreground'>public</span>
+        </div>
+        <p class='repo-description mb-0 mt-2 text-sm leading-snug text-muted-foreground'>
+          {repo.description}
+        </p>
+        <div class='mt-3 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground'>
+          {repo.language && <span>{repo.language}</span>}
+          <span>{repo.fullName}</span>
+        </div>
+      </a>
+    ))
+  }
+</div>
+
+<style>
+  .repo-name,
+  .repo-description {
+    overflow-wrap: anywhere;
+  }
+
+  .repo-description {
+    display: -webkit-box;
+    min-height: 2.5rem;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+</style>

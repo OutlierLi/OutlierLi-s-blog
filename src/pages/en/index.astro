@@ -9,6 +9,7 @@ import PostPreviewEn from '@/components/blog/PostPreviewEn.astro'
 import LinkCard from '@/components/home/LinkCard.astro'
 import Section from '@/components/home/Section.astro'
 import SiteStats from '@/components/home/SiteStats.astro'
+import TagCloud from '@/components/home/TagCloud.astro'
 import LegacyIntroOverlay from '@/components/intro/LegacyIntroOverlay.astro'
 import JoJo from '@/components/mascot/JoJo'
 import Terminal from '@/components/terminal/Terminal.astro'
@@ -17,7 +18,8 @@ import config from '@/site-config'
 export const prerender = true
 
 const MAX_POSTS = 5
-const allPostsByDate = (await getCollection('blogEn'))
+const allPosts = await getCollection('blogEn')
+const allPostsByDate = allPosts
   .filter((post) => (import.meta.env.PROD ? !post.data.draft : true))
   .sort(
     (a, b) =>
@@ -25,6 +27,7 @@ const allPostsByDate = (await getCollection('blogEn'))
       +new Date(a.data.updatedDate ?? a.data.publishDate)
   )
   .slice(0, MAX_POSTS)
+const hasTags = allPosts.some((post) => (post.data.tags ?? []).length > 0)
 
 const channelCards = [
   {
@@ -42,6 +45,14 @@ const channelCards = [
   {
     heading: 'Photography',
     href: '/en/photography'
+  },
+  {
+    heading: 'Projects',
+    href: '/en/projects'
+  },
+  {
+    heading: 'Investment',
+    href: '/en/investment'
   }
 ]
 ---
@@ -128,14 +139,23 @@ const channelCards = [
 
       <Section title='GitHub'>
         <LinkCard
-          heading='OutlierLi'
-          subheading='GitHub profile'
-          href='https://github.com/OutlierLi'
-          data-analytics-event='github_link_click'
+          heading='Projects'
+          subheading='Public GitHub activity'
+          href='/en/projects'
+          target='_self'
+          data-analytics-event='project_link_click'
           data-analytics-surface='home_github'
-          data-analytics-target='profile'
+          data-analytics-target='projects'
         />
       </Section>
+
+      {
+        hasTags && (
+          <Section title='Tag Cloud'>
+            <TagCloud posts={allPosts} basePath='/en/tags' />
+          </Section>
+        )
+      }
 
       <SiteStats lang='en' />
     </div>

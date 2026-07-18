@@ -9,6 +9,7 @@ import PageLayout from '@/layouts/BaseLayout.astro'
 import LinkCard from '@/components/home/LinkCard.astro'
 import Section from '@/components/home/Section.astro'
 import SiteStats from '@/components/home/SiteStats.astro'
+import TagCloud from '@/components/home/TagCloud.astro'
 import LegacyIntroOverlay from '@/components/intro/LegacyIntroOverlay.astro'
 import JoJo from '@/components/mascot/JoJo'
 import Terminal from '@/components/terminal/Terminal.astro'
@@ -19,6 +20,7 @@ export const prerender = true
 const MAX_POSTS = 5
 const allPosts = await getBlogCollection()
 const allPostsByDate = sortMDByDate(allPosts).slice(0, MAX_POSTS)
+const hasTags = allPosts.some((post) => (post.data.tags ?? []).length > 0)
 
 const channelCards = [
   {
@@ -36,6 +38,14 @@ const channelCards = [
   {
     heading: 'Photography',
     href: '/photography'
+  },
+  {
+    heading: 'Projects',
+    href: '/projects'
+  },
+  {
+    heading: 'Investment',
+    href: '/investment'
   }
 ]
 ---
@@ -124,14 +134,23 @@ const channelCards = [
 
       <Section title='GitHub'>
         <LinkCard
-          heading='OutlierLi'
-          subheading='GitHub profile'
-          href='https://github.com/OutlierLi'
-          data-analytics-event='github_link_click'
+          heading='Projects'
+          subheading='Public GitHub activity'
+          href='/projects'
+          target='_self'
+          data-analytics-event='project_link_click'
           data-analytics-surface='home_github'
-          data-analytics-target='profile'
+          data-analytics-target='projects'
         />
       </Section>
+
+      {
+        hasTags && (
+          <Section title='Tag Cloud'>
+            <TagCloud posts={allPosts} />
+          </Section>
+        )
+      }
 
       <SiteStats />
     </div>

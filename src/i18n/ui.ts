@@ -15,6 +15,7 @@ export const ui = {
     'nav.movies': 'Movies',
     'nav.photography': 'Photography',
     'nav.projects': 'Projects',
+    'nav.investment': 'Investment',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.search': 'Search',
@@ -31,6 +32,7 @@ export const ui = {
     'nav.movies': 'Movies',
     'nav.photography': 'Photography',
     'nav.projects': 'Projects',
+    'nav.investment': 'Investment',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.search': 'Search',
@@ -94,6 +96,7 @@ export function hasEnAlternate(barePath: string): boolean {
       '/movies',
       '/photography',
       '/projects',
+      '/investment',
       '/contact',
       '/search',
       '/tags'

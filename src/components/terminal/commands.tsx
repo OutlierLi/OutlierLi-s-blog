@@ -236,7 +236,7 @@ export const commands: CommandRegistry = {
       const node = getNode(fs, target)
       if (!node) {
         if (
-          /^\/(blog|thoughts|books|movies|photography|search|projects|about|contact)(\/|$)/.test(
+          /^\/(blog|thoughts|books|movies|photography|search|projects|investment|about|contact)(\/|$)/.test(
             args[0]
           )
         ) {

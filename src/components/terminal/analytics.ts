@@ -39,7 +39,9 @@ export function classifyTerminalCommand(
     }
 
     if (
-      /^\/(blog|thoughts|books|movies|photography|search|projects|about|contact)(\/|$)/.test(input)
+      /^\/(blog|thoughts|books|movies|photography|search|projects|investment|about|contact)(\/|$)/.test(
+        input
+      )
     ) {
       return {
         command_result: 'navigation',

@@ -1,11 +1,18 @@
 ---
 import PageLayout from '@/layouts/CommonPage.astro'
 import GitHubContributions from '@/components/projects/GitHubContributions.astro'
+import PublicRepos from '@/components/projects/PublicRepos.astro'
 
-const headings = [{ depth: 2, slug: 'github', text: 'GitHub' }]
+const headings = [
+  { depth: 2, slug: 'github', text: 'GitHub' },
+  { depth: 2, slug: 'public-repositories', text: 'Public Repositories' }
+]
 ---
 
 <PageLayout title='Projects' {headings} info={{ slug: '/projects', hideComment: true }}>
   <h2 id='github'>GitHub</h2>
   <GitHubContributions username='OutlierLi' />
+
+  <h2 id='public-repositories'>Public Repositories</h2>
+  <PublicRepos username='OutlierLi' />
 </PageLayout>
